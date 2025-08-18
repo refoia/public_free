@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aide aux Urgences - Emergency Help - Ayuda de Emergencia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        emergency: '#DC2626'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-gray-900 min-h-screen transition-colors duration-300">
+    <div class="container mx-auto px-4 py-6 max-w-4xl">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-emergency mb-4">
+                <i class="fas fa-ambulance mr-3"></i>
+                <span id="app-title">Guide d'Aide aux Urgences</span>
+            </h1>
+            
+            <!-- Language Selector -->
+            <div class="flex justify-center space-x-4 mb-6">
+                <button onclick="changeLanguage('fr')" class="lang-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors" data-lang="fr">
+                    🇫🇷 Français
+                </button>
+                <button onclick="changeLanguage('en')" class="lang-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors" data-lang="en">
+                    🇺🇸 English
+                </button>
+                <button onclick="changeLanguage('es')" class="lang-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors" data-lang="es">
+                    🇪🇸 Español
+                </button>
+            </div>
+
+            <!-- Emergency Numbers -->
+            <div class="bg-emergency text-white p-4 rounded-lg mb-6">
+                <h2 class="text-xl font-bold mb-2" id="emergency-numbers-title">Numéros d'Urgence</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-lg font-bold">
+                    <div>🇫🇷 France: 15 (SAMU), 18 (Pompiers), 112</div>
+                    <div>🇺🇸 USA: 911</div>
+                    <div>🇪🇸 España: 112</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Emergency Scenarios -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Fire Emergency -->
+            <div class="emergency-card bg-white dark:bg-gray-800 border-2 border-red-300 rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow cursor-pointer" onclick="showEmergencyDetails('fire')">
+                <div class="text-center mb-4">
+                    <i class="fas fa-fire text-6xl text-red-500 mb-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="fire-title">Incendie</h3>
+                </div>
+                <p class="text-gray-600 dark:text-gray-300" id="fire-desc">Instructions pour réagir en cas d'incendie</p>
+            </div>
+
+            <!-- Person Falling -->
+            <div class="emergency-card bg-white dark:bg-gray-800 border-2 border-orange-300 rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow cursor-pointer" onclick="showEmergencyDetails('fall')">
+                <div class="text-center mb-4">
+                    <i class="fas fa-person-falling text-6xl text-orange-500 mb-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="fall-title">Personne qui tombe</h3>
+                </div>
+                <p class="text-gray-600 dark:text-gray-300" id="fall-desc">Aide pour une personne blessée</p>
+            </div>
+
+            <!-- Car Accident -->
+            <div class="emergency-card bg-white dark:bg-gray-800 border-2 border-yellow-300 rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow cursor-pointer" onclick="showEmergencyDetails('car')">
+                <div class="text-center mb-4">
+                    <i class="fas fa-car-crash text-6xl text-yellow-500 mb-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="car-title">Accident de voiture</h3>
+                </div>
+                <p class="text-gray-600 dark:text-gray-300" id="car-desc">Procédures d'urgence routière</p>
+            </div>
+
+            <!-- Choking -->
+            <div class="emergency-card bg-white dark:bg-gray-800 border-2 border-purple-300 rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow cursor-pointer" onclick="showEmergencyDetails('choking')">
+                <div class="text-center mb-4">
+                    <i class="fas fa-lungs text-6xl text-purple-500 mb-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="choking-title">Étouffement</h3>
+                </div>
+                <p class="text-gray-600 dark:text-gray-300" id="choking-desc">Manœuvre de Heimlich et premiers secours</p>
+            </div>
+
+            <!-- Heart Attack -->
+            <div class="emergency-card bg-white dark:bg-gray-800 border-2 border-pink-300 rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow cursor-pointer" onclick="showEmergencyDetails('heart')">
+                <div class="text-center mb-4">
+                    <i class="fas fa-heart-pulse text-6xl text-pink-500 mb-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="heart-title">Crise cardiaque</h3>
+                </div>
+                <p class="text-gray-600 dark:text-gray-300" id="heart-desc">Signes et réaction d'urgence</p>
+            </div>
+
+            <!-- Drowning -->
+            <div class="emergency-card bg-white dark:bg-gray-800 border-2 border-blue-300 rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow cursor-pointer" onclick="showEmergencyDetails('drowning')">
+                <div class="text-center mb-4">
+                    <i class="fas fa-person-drowning text-6xl text-blue-500 mb-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="drowning-title">Noyade</h3>
+                </div>
+                <p class="text-gray-600 dark:text-gray-300" id="drowning-desc">Sauvetage aquatique et réanimation</p>
+            </div>
+        </div>
+
+        <!-- Modal for Emergency Details -->
+        <div id="emergency-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 id="modal-title" class="text-2xl font-bold text-gray-800 dark:text-white"></h2>
+                        <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    <div id="modal-content" class="text-gray-700 dark:text-gray-300"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode detection
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        let currentLanguage = 'fr';
+
+        const translations = {
+            fr: {
+                'app-title': 'Guide d\'Aide aux Urgences',
+                'emergency-numbers-title': 'Numéros d\'Urgence',
+                'fire-title': 'Incendie',
+                'fire-desc': 'Instructions pour réagir en cas d\'incendie',
+                'fall-title': 'Personne qui tombe',
+                'fall-desc': 'Aide pour une personne blessée',
+                'car-title': 'Accident de voiture',
+                'car-desc': 'Procédures d\'urgence routière',
+                'choking-title': 'Étouffement',
+                'choking-desc': 'Manœuvre de Heimlich et premiers secours',
+                'heart-title': 'Crise cardiaque',
+                'heart-desc': 'Signes et réaction d\'urgence',
+                'drowning-title': 'Noyade',
+                'drowning-desc': 'Sauvetage aquatique et réanimation'
+            },
+            en: {
+                'app-title': 'Emergency Help Guide',
+                'emergency-numbers-title': 'Emergency Numbers',
+                'fire-title': 'Fire',
+                'fire-desc': 'Instructions for fire emergency response',
+                'fall-title': 'Person Falling',
+                'fall-desc': 'Help for injured person',
+                'car-title': 'Car Accident',
+                'car-desc': 'Road emergency procedures',
+                'choking-title': 'Choking',
+                'choking-desc': 'Heimlich maneuver and first aid',
+                'heart-title': 'Heart Attack',
+                'heart-desc': 'Signs and emergency response',
+                'drowning-title': 'Drowning',
+                'drowning-desc': 'Water rescue and resuscitation'
+            },
+            es: {
+                'app-title': 'Guía de Ayuda de Emergencia',
+                'emergency-numbers-title': 'Números de Emergencia',
+                'fire-title': 'Incendio',
+                'fire-desc': 'Instrucciones para respuesta de emergencia por incendio',
+                'fall-title': 'Persona Cayendo',
+                'fall-desc': 'Ayuda para persona herida',
+                'car-title': 'Accidente de Coche',
+                'car-desc': 'Procedimientos de emergencia vial',
+                'choking-title': 'Asfixia',
+                'choking-desc': 'Maniobra de Heimlich y primeros auxilios',
+                'heart-title': 'Ataque Cardíaco',
+                'heart-desc': 'Señales y respuesta de emergencia',
+                'drowning-title': 'Ahogamiento',
+                'drowning-desc': 'Rescate acuático y reanimación'
+            }
+        };
+
+        const emergencyContent = {
+            fire: {
+                fr: {
+                    title: '🔥 Incendie - Procédure d\'urgence',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ APPELER IMMÉDIATEMENT :</h3>
+                                <p class="text-xl font-bold">18 (Pompiers) ou 112</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🔄 Étapes à suivre :</h3>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Alerter :</strong> Appelez les secours immédiatement</li>
+                                <li><strong>Évacuer :</strong> Sortez rapidement mais calmement</li>
+                                <li><strong>Ne pas revenir :</strong> Ne retournez jamais chercher des objets</li>
+                                <li><strong>Point de rassemblement :</strong> Rejoignez le point de rassemblement</li>
+                                <li><strong>Fermer les portes :</strong> Fermez les portes derrière vous pour ralentir le feu</li>
+                            </ol>
+
+                            <div class="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ SI VOUS ÊTES BLOQUÉ :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Fermez toutes les portes entre vous et le feu</li>
+                                    <li>Bouchez les fentes avec des tissus humides</li>
+                                    <li>Signalez votre présence à la fenêtre</li>
+                                    <li>Restez près du sol (l'air y est plus respirable)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">❌ NE JAMAIS :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Utiliser l'ascenseur</li>
+                                    <li>Ouvrir une porte chaude</li>
+                                    <li>Retourner dans le bâtiment</li>
+                                    <li>Utiliser de l'eau sur un feu électrique</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                en: {
+                    title: '🔥 Fire - Emergency Procedure',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ CALL IMMEDIATELY:</h3>
+                                <p class="text-xl font-bold">911 (US) or 112 (EU)</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🔄 Steps to follow:</h3>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Alert:</strong> Call emergency services immediately</li>
+                                <li><strong>Evacuate:</strong> Exit quickly but calmly</li>
+                                <li><strong>Don't return:</strong> Never go back for belongings</li>
+                                <li><strong>Assembly point:</strong> Go to the assembly point</li>
+                                <li><strong>Close doors:</strong> Close doors behind you to slow the fire</li>
+                            </ol>
+
+                            <div class="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ IF YOU ARE TRAPPED:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Close all doors between you and the fire</li>
+                                    <li>Seal gaps with wet cloth</li>
+                                    <li>Signal your presence at the window</li>
+                                    <li>Stay low to the ground (air is more breathable there)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">❌ NEVER:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Use elevators</li>
+                                    <li>Open a hot door</li>
+                                    <li>Return to the building</li>
+                                    <li>Use water on electrical fires</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                es: {
+                    title: '🔥 Incendio - Procedimiento de Emergencia',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ LLAMAR INMEDIATAMENTE:</h3>
+                                <p class="text-xl font-bold">112 (España)</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🔄 Pasos a seguir:</h3>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Alertar:</strong> Llame a los servicios de emergencia inmediatamente</li>
+                                <li><strong>Evacuar:</strong> Salga rápido pero con calma</li>
+                                <li><strong>No regresar:</strong> Nunca vuelva por pertenencias</li>
+                                <li><strong>Punto de reunión:</strong> Vaya al punto de reunión</li>
+                                <li><strong>Cerrar puertas:</strong> Cierre las puertas detrás de usted para ralentizar el fuego</li>
+                            </ol>
+
+                            <div class="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ SI ESTÁ ATRAPADO:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Cierre todas las puertas entre usted y el fuego</li>
+                                    <li>Selle las rendijas con tela húmeda</li>
+                                    <li>Señale su presencia en la ventana</li>
+                                    <li>Manténgase cerca del suelo (el aire es más respirable allí)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">❌ NUNCA:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Usar ascensores</li>
+                                    <li>Abrir una puerta caliente</li>
+                                    <li>Volver al edificio</li>
+                                    <li>Usar agua en fuegos eléctricos</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                }
+            },
+            fall: {
+                fr: {
+                    title: '🚑 Personne qui tombe - Premiers secours',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ APPELER :</h3>
+                                <p class="text-xl font-bold">15 (SAMU) ou 112</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🔄 Évaluation initiale :</h3>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Sécurité :</strong> Assurez-vous que la zone est sûre</li>
+                                <li><strong>Conscience :</strong> Vérifiez si la personne répond</li>
+                                <li><strong>Respiration :</strong> Contrôlez si elle respire normalement</li>
+                                <li><strong>Saignements :</strong> Recherchez des blessures visibles</li>
+                            </ol>
+
+                            <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">✅ SI LA PERSONNE EST CONSCIENTE :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Parlez-lui calmement</li>
+                                    <li>Ne la déplacez pas (risque de blessure à la colonne)</li>
+                                    <li>Couvrez-la pour éviter l'hypothermie</li>
+                                    <li>Surveillez sa respiration et son pouls</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-orange-100 dark:bg-orange-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ SI LA PERSONNE EST INCONSCIENTE :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Vérifiez la respiration</li>
+                                    <li>Si elle respire : position latérale de sécurité</li>
+                                    <li>Si elle ne respire pas : massage cardiaque + bouche-à-bouche</li>
+                                    <li>Ne quittez jamais la personne</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">❌ NE PAS :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Déplacer la personne sans raison</li>
+                                    <li>Donner à boire ou à manger</li>
+                                    <li>Laisser la personne seule</li>
+                                    <li>Minimiser la gravité de la chute</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                en: {
+                    title: '🚑 Person Falling - First Aid',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ CALL:</h3>
+                                <p class="text-xl font-bold">911 (US) or 112 (EU)</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🔄 Initial assessment:</h3>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Safety:</strong> Ensure the area is safe</li>
+                                <li><strong>Consciousness:</strong> Check if the person responds</li>
+                                <li><strong>Breathing:</strong> Check if they are breathing normally</li>
+                                <li><strong>Bleeding:</strong> Look for visible injuries</li>
+                            </ol>
+
+                            <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">✅ IF THE PERSON IS CONSCIOUS:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Speak to them calmly</li>
+                                    <li>Don't move them (risk of spinal injury)</li>
+                                    <li>Cover them to prevent hypothermia</li>
+                                    <li>Monitor their breathing and pulse</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-orange-100 dark:bg-orange-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ IF THE PERSON IS UNCONSCIOUS:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Check breathing</li>
+                                    <li>If breathing: recovery position</li>
+                                    <li>If not breathing: CPR + rescue breathing</li>
+                                    <li>Never leave the person alone</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">❌ DO NOT:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Move the person unnecessarily</li>
+                                    <li>Give food or drink</li>
+                                    <li>Leave the person alone</li>
+                                    <li>Minimize the severity of the fall</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                es: {
+                    title: '🚑 Persona Cayendo - Primeros Auxilios',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ LLAMAR:</h3>
+                                <p class="text-xl font-bold">112 (España)</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🔄 Evaluación inicial:</h3>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Seguridad:</strong> Asegúrese de que el área es segura</li>
+                                <li><strong>Conciencia:</strong> Verifique si la persona responde</li>
+                                <li><strong>Respiración:</strong> Controle si respira normalmente</li>
+                                <li><strong>Sangrado:</strong> Busque heridas visibles</li>
+                            </ol>
+
+                            <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">✅ SI LA PERSONA ESTÁ CONSCIENTE:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Hable con ella con calma</li>
+                                    <li>No la mueva (riesgo de lesión espinal)</li>
+                                    <li>Cúbrala para evitar hipotermia</li>
+                                    <li>Monitoree su respiración y pulso</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-orange-100 dark:bg-orange-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ SI LA PERSONA ESTÁ INCONSCIENTE:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Verifique la respiración</li>
+                                    <li>Si respira: posición de recuperación</li>
+                                    <li>Si no respira: RCP + respiración de rescate</li>
+                                    <li>Nunca deje sola a la persona</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">❌ NO:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Mover a la persona innecesariamente</li>
+                                    <li>Dar comida o bebida</li>
+                                    <li>Dejar sola a la persona</li>
+                                    <li>Minimizar la gravedad de la caída</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                }
+            },
+            car: {
+                fr: {
+                    title: '🚗 Accident de voiture - Procédure',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ APPELER :</h3>
+                                <p class="text-xl font-bold">15 (SAMU), 17 (Police), 18 (Pompiers) ou 112</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🔄 Sécuriser la zone :</h3>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Arrêtez-vous :</strong> En sécurité, allumez les feux de détresse</li>
+                                <li><strong>Triangle :</strong> Placez le triangle à 150m en amont</li>
+                                <li><strong>Gilet :</strong> Portez un gilet de sécurité réfléchissant</li>
+                                <li><strong>Circulation :</strong> Sortez du véhicule côté sécurisé</li>
+                            </ol>
+
+                            <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">🚑 Secours aux victimes :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Évaluez l'état des victimes sans les déplacer</li>
+                                    <li>Parlez-leur pour les rassurer</li>
+                                    <li>Couvrez-les pour éviter l'hypothermie</li>
+                                    <li>Contrôlez les saignements visibles</li>
+                                    <li>Coupez le contact si possible</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">📞 Informations à donner aux secours :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Localisation exacte (rue, kilomètre, sens)</li>
+                                    <li>Nombre de véhicules impliqués</li>
+                                    <li>Nombre de victimes et leur état</li>
+                                    <li>Risques particuliers (feu, produits dangereux)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">❌ ÉVITER :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Déplacer les victimes</li>
+                                    <li>Donner à boire</li>
+                                    <li>Enlever le casque d'un motard</li>
+                                    <li>Fumer près des véhicules</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                en: {
+                    title: '🚗 Car Accident - Procedure',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ CALL:</h3>
+                                <p class="text-xl font-bold">911 (US) or 112 (EU)</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🔄 Secure the area:</h3>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Stop safely:</strong> Turn on hazard lights</li>
+                                <li><strong>Warning triangle:</strong> Place 150m upstream</li>
+                                <li><strong>Safety vest:</strong> Wear reflective safety vest</li>
+                                <li><strong>Traffic:</strong> Exit vehicle on safe side</li>
+                            </ol>
+
+                            <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">🚑 Victim assistance:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Assess victims' condition without moving them</li>
+                                    <li>Talk to them to reassure</li>
+                                    <li>Cover them to prevent hypothermia</li>
+                                    <li>Control visible bleeding</li>
+                                    <li>Turn off ignition if possible</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">📞 Information for emergency services:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Exact location (street, mile marker, direction)</li>
+                                    <li>Number of vehicles involved</li>
+                                    <li>Number of victims and their condition</li>
+                                    <li>Special risks (fire, hazardous materials)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">❌ AVOID:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Moving victims</li>
+                                    <li>Giving drinks</li>
+                                    <li>Removing motorcyclist's helmet</li>
+                                    <li>Smoking near vehicles</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                es: {
+                    title: '🚗 Accidente de Coche - Procedimiento',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ LLAMAR:</h3>
+                                <p class="text-xl font-bold">112 (España)</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🔄 Asegurar la zona:</h3>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Pare con seguridad:</strong> Encienda las luces de emergencia</li>
+                                <li><strong>Triángulo:</strong> Coloque a 150m antes del accidente</li>
+                                <li><strong>Chaleco:</strong> Use chaleco reflectante de seguridad</li>
+                                <li><strong>Tráfico:</strong> Salga del vehículo por el lado seguro</li>
+                            </ol>
+
+                            <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">🚑 Asistencia a víctimas:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Evalúe el estado de las víctimas sin moverlas</li>
+                                    <li>Hable con ellas para tranquilizarlas</li>
+                                    <li>Cúbralas para evitar hipotermia</li>
+                                    <li>Controle sangrados visibles</li>
+                                    <li>Apague el motor si es posible</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">📞 Información para servicios de emergencia:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Ubicación exacta (calle, kilómetro, dirección)</li>
+                                    <li>Número de vehículos involucrados</li>
+                                    <li>Número de víctimas y su estado</li>
+                                    <li>Riesgos especiales (fuego, materiales peligrosos)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">❌ EVITAR:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Mover a las víctimas</li>
+                                    <li>Dar de beber</li>
+                                    <li>Quitar el casco a un motociclista</li>
+                                    <li>Fumar cerca de los vehículos</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                }
+            },
+            choking: {
+                fr: {
+                    title: '🫁 Étouffement - Manœuvre de Heimlich',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ SI PAS D'AMÉLIORATION : APPELER</h3>
+                                <p class="text-xl font-bold">15 (SAMU) ou 112</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🔄 Adulte conscient - Manœuvre de Heimlich :</h3>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Position :</strong> Debout derrière la victime</li>
+                                <li><strong>Mains :</strong> Poing fermé sous le sternum</li>
+                                <li><strong>Compression :</strong> Poussées fermes vers le haut et l'arrière</li>
+                                <li><strong>Répétition :</strong> Jusqu'à expulsion de l'objet</li>
+                            </ol>
+
+                            <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">👶 Nourrisson (moins de 1 an) :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Position tête en bas sur votre avant-bras</li>
+                                    <li>5 claques dans le dos entre les omoplates</li>
+                                    <li>Si inefficace : 5 compressions thoraciques</li>
+                                    <li>Alternez jusqu'à libération des voies aériennes</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">👦 Enfant (1-8 ans) :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>5 claques dans le dos (enfant penché en avant)</li>
+                                    <li>Si inefficace : Heimlich adapté (moins de force)</li>
+                                    <li>Compressions plus douces que pour un adulte</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-orange-100 dark:bg-orange-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ Si la personne devient inconsciente :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Allongez-la au sol</li>
+                                    <li>Commencez le massage cardiaque</li>
+                                    <li>Vérifiez la bouche avant chaque insufflation</li>
+                                    <li>Continuez jusqu'à l'arrivée des secours</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                en: {
+                    title: '🫁 Choking - Heimlich Maneuver',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ IF NO IMPROVEMENT: CALL</h3>
+                                <p class="text-xl font-bold">911 (US) or 112 (EU)</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🔄 Conscious adult - Heimlich Maneuver:</h3>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Position:</strong> Stand behind the victim</li>
+                                <li><strong>Hands:</strong> Closed fist below the sternum</li>
+                                <li><strong>Compression:</strong> Firm thrusts upward and backward</li>
+                                <li><strong>Repetition:</strong> Until object is expelled</li>
+                            </ol>
+
+                            <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">👶 Infant (under 1 year):</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Position head down on your forearm</li>
+                                    <li>5 back blows between shoulder blades</li>
+                                    <li>If ineffective: 5 chest compressions</li>
+                                    <li>Alternate until airway is cleared</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">👦 Child (1-8 years):</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>5 back blows (child leaning forward)</li>
+                                    <li>If ineffective: Adapted Heimlich (less force)</li>
+                                    <li>Gentler compressions than for adults</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-orange-100 dark:bg-orange-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ If person becomes unconscious:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Lay them on the ground</li>
+                                    <li>Begin CPR</li>
+                                    <li>Check mouth before each rescue breath</li>
+                                    <li>Continue until emergency services arrive</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                es: {
+                    title: '🫁 Asfixia - Maniobra de Heimlich',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ SI NO HAY MEJORA: LLAMAR</h3>
+                                <p class="text-xl font-bold">112 (España)</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🔄 Adulto consciente - Maniobra de Heimlich:</h3>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Posición:</strong> De pie detrás de la víctima</li>
+                                <li><strong>Manos:</strong> Puño cerrado debajo del esternón</li>
+                                <li><strong>Compresión:</strong> Empujes firmes hacia arriba y atrás</li>
+                                <li><strong>Repetición:</strong> Hasta expulsar el objeto</li>
+                            </ol>
+
+                            <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">👶 Bebé (menor de 1 año):</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Posición cabeza abajo en su antebrazo</li>
+                                    <li>5 golpes en la espalda entre los omóplatos</li>
+                                    <li>Si es ineficaz: 5 compresiones torácicas</li>
+                                    <li>Alterne hasta liberar las vías respiratorias</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">👦 Niño (1-8 años):</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>5 golpes en la espalda (niño inclinado hacia adelante)</li>
+                                    <li>Si es ineficaz: Heimlich adaptado (menos fuerza)</li>
+                                    <li>Compresiones más suaves que para adultos</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-orange-100 dark:bg-orange-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ Si la persona se vuelve inconsciente:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Acuéstela en el suelo</li>
+                                    <li>Comience RCP</li>
+                                    <li>Revise la boca antes de cada respiración de rescate</li>
+                                    <li>Continúe hasta que lleguen los servicios de emergencia</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                }
+            },
+            heart: {
+                fr: {
+                    title: '💓 Crise cardiaque - Urgence vitale',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ APPELER IMMÉDIATEMENT :</h3>
+                                <p class="text-xl font-bold">15 (SAMU) ou 112</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🚨 Signes d'alerte :</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Douleur thoracique :</strong> Intense, oppressante, persistante</li>
+                                <li><strong>Irradiation :</strong> Bras gauche, mâchoire, dos</li>
+                                <li><strong>Essoufflement :</strong> Soudain et intense</li>
+                                <li><strong>Sueurs :</strong> Froides et abondantes</li>
+                                <li><strong>Nausées :</strong> Vomissements possibles</li>
+                                <li><strong>Malaise :</strong> Sensation de mort imminente</li>
+                            </ul>
+
+                            <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">✅ Actions immédiates :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Arrêter toute activité physique</li>
+                                    <li>Position demi-assise, dos soutenu</li>
+                                    <li>Desserrer les vêtements</li>
+                                    <li>Rassurer et rester calme</li>
+                                    <li>Surveiller la respiration et le pouls</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">💊 Si la personne a des médicaments :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Trinitrine : Aider à la prendre si prescrite</li>
+                                    <li>Aspirine : 1 comprimé à croquer (si pas d'allergie)</li>
+                                    <li>Ne pas donner d'autres médicaments</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-orange-100 dark:bg-orange-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ Si arrêt cardiaque (inconsciente + pas de respiration) :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Massage cardiaque immédiat (100-120/min)</li>
+                                    <li>Compressions de 5cm de profondeur</li>
+                                    <li>Bouche-à-bouche (30 compressions / 2 insufflations)</li>
+                                    <li>Continuer jusqu'à l'arrivée des secours</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                en: {
+                    title: '💓 Heart Attack - Life-threatening Emergency',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ CALL IMMEDIATELY:</h3>
+                                <p class="text-xl font-bold">911 (US) or 112 (EU)</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🚨 Warning signs:</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Chest pain:</strong> Intense, oppressive, persistent</li>
+                                <li><strong>Radiating pain:</strong> Left arm, jaw, back</li>
+                                <li><strong>Shortness of breath:</strong> Sudden and intense</li>
+                                <li><strong>Sweating:</strong> Cold and profuse</li>
+                                <li><strong>Nausea:</strong> Possible vomiting</li>
+                                <li><strong>Feeling of impending doom</strong></li>
+                            </ul>
+
+                            <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">✅ Immediate actions:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Stop all physical activity</li>
+                                    <li>Semi-sitting position, back supported</li>
+                                    <li>Loosen clothing</li>
+                                    <li>Reassure and stay calm</li>
+                                    <li>Monitor breathing and pulse</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">💊 If person has medications:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Nitroglycerin: Help take if prescribed</li>
+                                    <li>Aspirin: 1 tablet to chew (if no allergy)</li>
+                                    <li>Don't give other medications</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-orange-100 dark:bg-orange-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ If cardiac arrest (unconscious + no breathing):</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Immediate CPR (100-120/min)</li>
+                                    <li>Compressions 2 inches deep</li>
+                                    <li>Rescue breathing (30 compressions / 2 breaths)</li>
+                                    <li>Continue until emergency services arrive</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                es: {
+                    title: '💓 Ataque Cardíaco - Emergencia Vital',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ LLAMAR INMEDIATAMENTE:</h3>
+                                <p class="text-xl font-bold">112 (España)</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🚨 Señales de alerta:</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Dolor torácico:</strong> Intenso, opresivo, persistente</li>
+                                <li><strong>Irradiación:</strong> Brazo izquierdo, mandíbula, espalda</li>
+                                <li><strong>Falta de aire:</strong> Súbita e intensa</li>
+                                <li><strong>Sudoración:</strong> Fría y abundante</li>
+                                <li><strong>Náuseas:</strong> Posibles vómitos</li>
+                                <li><strong>Sensación de muerte inminente</strong></li>
+                            </ul>
+
+                            <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">✅ Acciones inmediatas:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Detener toda actividad física</li>
+                                    <li>Posición semi-sentada, espalda apoyada</li>
+                                    <li>Aflojar la ropa</li>
+                                    <li>Tranquilizar y mantener la calma</li>
+                                    <li>Monitorear respiración y pulso</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">💊 Si la persona tiene medicamentos:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Nitroglicerina: Ayudar a tomarla si está prescrita</li>
+                                    <li>Aspirina: 1 comprimido para masticar (si no hay alergia)</li>
+                                    <li>No dar otros medicamentos</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-orange-100 dark:bg-orange-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ Si hay paro cardíaco (inconsciente + no respira):</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>RCP inmediata (100-120/min)</li>
+                                    <li>Compresiones de 5cm de profundidad</li>
+                                    <li>Respiración de rescate (30 compresiones / 2 respiraciones)</li>
+                                    <li>Continuar hasta que lleguen los servicios de emergencia</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                }
+            },
+            drowning: {
+                fr: {
+                    title: '🏊 Noyade - Sauvetage aquatique',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ APPELER :</h3>
+                                <p class="text-xl font-bold">15 (SAMU), 18 (Pompiers) ou 112</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🔄 Priorité : Votre sécurité d'abord :</h3>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Évaluer :</strong> Vos capacités de nageur</li>
+                                <li><strong>Appeler :</strong> Les secours avant d'agir</li>
+                                <li><strong>Utiliser :</strong> Une perche, corde ou bouée si possible</li>
+                                <li><strong>Dernier recours :</strong> Sauvetage direct dans l'eau</li>
+                            </ol>
+
+                            <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">🏊 Sauvetage dans l'eau :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Approche par derrière pour éviter les griffures</li>
+                                    <li>Maintenir la tête hors de l'eau</li>
+                                    <li>Nage sur le dos en tirant la victime</li>
+                                    <li>Sortir de l'eau rapidement mais prudemment</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">🚑 Une fois hors de l'eau :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Vérifier la conscience et la respiration</li>
+                                    <li>Position latérale de sécurité si respire</li>
+                                    <li>Réanimation cardio-pulmonaire si nécessaire</li>
+                                    <li>Réchauffer la victime (couverture)</li>
+                                    <li>Surveiller jusqu'à l'arrivée des secours</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ Attention aux noyés :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Peuvent vomir de l'eau</li>
+                                    <li>Risque d'hypothermie</li>
+                                    <li>Complications possibles (œdème pulmonaire)</li>
+                                    <li>Surveillance médicale obligatoire</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">❌ NE PAS :</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Se mettre en danger</li>
+                                    <li>Sauter à l'eau sans réfléchir</li>
+                                    <li>Abandonner la réanimation trop tôt</li>
+                                    <li>Laisser la victime seule après sauvetage</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                en: {
+                    title: '🏊 Drowning - Water Rescue',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ CALL:</h3>
+                                <p class="text-xl font-bold">911 (US) or 112 (EU)</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🔄 Priority: Your safety first:</h3>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Assess:</strong> Your swimming abilities</li>
+                                <li><strong>Call:</strong> Emergency services before acting</li>
+                                <li><strong>Use:</strong> A pole, rope or buoy if possible</li>
+                                <li><strong>Last resort:</strong> Direct water rescue</li>
+                            </ol>
+
+                            <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">🏊 Water rescue:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Approach from behind to avoid grabbing</li>
+                                    <li>Keep head above water</li>
+                                    <li>Backstroke while pulling victim</li>
+                                    <li>Exit water quickly but carefully</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">🚑 Once out of water:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Check consciousness and breathing</li>
+                                    <li>Recovery position if breathing</li>
+                                    <li>CPR if necessary</li>
+                                    <li>Warm the victim (blanket)</li>
+                                    <li>Monitor until emergency services arrive</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ Beware of drowning victims:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>May vomit water</li>
+                                    <li>Risk of hypothermia</li>
+                                    <li>Possible complications (pulmonary edema)</li>
+                                    <li>Medical supervision required</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">❌ DO NOT:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Put yourself in danger</li>
+                                    <li>Jump in water without thinking</li>
+                                    <li>Give up resuscitation too early</li>
+                                    <li>Leave victim alone after rescue</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                es: {
+                    title: '🏊 Ahogamiento - Rescate Acuático',
+                    content: `
+                        <div class="space-y-4">
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ LLAMAR:</h3>
+                                <p class="text-xl font-bold">112 (España)</p>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg">🔄 Prioridad: Su seguridad primero:</h3>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Evaluar:</strong> Sus habilidades de natación</li>
+                                <li><strong>Llamar:</strong> Servicios de emergencia antes de actuar</li>
+                                <li><strong>Usar:</strong> Una pértiga, cuerda o boya si es posible</li>
+                                <li><strong>Último recurso:</strong> Rescate directo en el agua</li>
+                            </ol>
+
+                            <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">🏊 Rescate en el agua:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Acercarse por detrás para evitar agarres</li>
+                                    <li>Mantener la cabeza fuera del agua</li>
+                                    <li>Nadar de espaldas tirando de la víctima</li>
+                                    <li>Salir del agua rápido pero con cuidado</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">🚑 Una vez fuera del agua:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Verificar conciencia y respiración</li>
+                                    <li>Posición de recuperación si respira</li>
+                                    <li>RCP si es necesario</li>
+                                    <li>Calentar a la víctima (manta)</li>
+                                    <li>Monitorear hasta que lleguen los servicios de emergencia</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">⚠️ Cuidado con víctimas de ahogamiento:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Pueden vomitar agua</li>
+                                    <li>Riesgo de hipotermia</li>
+                                    <li>Posibles complicaciones (edema pulmonar)</li>
+                                    <li>Supervisión médica requerida</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                <h3 class="font-bold text-lg mb-2">❌ NO:</h3>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Ponerse en peligro</li>
+                                    <li>Saltar al agua sin pensar</li>
+                                    <li>Abandonar la reanimación demasiado pronto</li>
+                                    <li>Dejar sola a la víctima después del rescate</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                }
+            }
+        };
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            document.documentElement.lang = lang;
+            
+            // Update active language button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('bg-primary', 'bg-blue-600');
+                btn.classList.add('bg-blue-500', 'hover:bg-blue-600');
+            });
+            document.querySelector(`[data-lang="${lang}"]`).classList.remove('bg-blue-500', 'hover:bg-blue-600');
+            document.querySelector(`[data-lang="${lang}"]`).classList.add('bg-primary');
+
+            // Update text content
+            Object.keys(translations[lang]).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+        }
+
+        function showEmergencyDetails(emergencyType) {
+            const modal = document.getElementById('emergency-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContent = document.getElementById('modal-content');
+
+            const content = emergencyContent[emergencyType][currentLanguage];
+            modalTitle.textContent = content.title;
+            modalContent.innerHTML = content.content;
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('emergency-modal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('emergency-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Initialize with French
+        changeLanguage('fr');
+    </script>
+</body>
+</html>
