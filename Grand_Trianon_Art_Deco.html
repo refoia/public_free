@@ -1,0 +1,424 @@
+<!DOCTYPE html><html lang="fr"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hôtel Grand Trianon - Luxe &amp; Raffinement</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Polices -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Cormorant+Garamond:wght@400;500;600&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+
+  <!-- Config Tailwind inline -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            trianon: {
+              blush: "#E9C9C4",
+              rose: "#D9A6A0",
+              orchid: "#B97C7A",
+              gold: "#C8A96E",
+              gilt: "#A88B4A",
+              jade: "#2E5E52",
+              malachite: "#1D4D44",
+              ebony: "#111417",
+              ink: "#0A0E12",
+              ivory: "#F7F2EA",
+              pearl: "#F2E8DF",
+            }
+          },
+          fontFamily: {
+            deco: ["Cinzel", "Cormorant Garamond", "serif"],
+            sans: ["Inter", "ui-sans-serif", "system-ui"],
+          },
+          borderRadius: {
+            deco: "1.25rem",
+          },
+          boxShadow: {
+            deco: "0 10px 30px -10px rgba(17,20,23,.35)",
+            soft: "0 6px 18px -6px rgba(0,0,0,.2)",
+          },
+          backgroundImage: {
+            "deco-fan": "radial-gradient(circle at 50% 120%, rgba(200,169,110,.35), transparent 60%), repeating-linear-gradient(135deg, rgba(17,20,23,.6) 0 14px, rgba(17,20,23,.5) 14px 28px)",
+            "marble-rose": "linear-gradient(115deg, #F7F2EA 0%, #E9C9C4 50%, #D9A6A0 100%)",
+          },
+        }
+      }
+    }
+  </script>
+
+ <style>
+    .scroll-smooth { scroll-behavior: smooth; }
+    .hero-pattern {
+      background-image: radial-gradient(circle at 50% 120%, rgba(200,169,110,.35), transparent 60%), 
+                       repeating-linear-gradient(135deg, rgba(17,20,23,.6) 0 14px, rgba(17,20,23,.5) 14px 28px);
+    }
+    .marble-gradient {
+      background-image: linear-gradient(115deg, #F7F2EA 0%, #E9C9C4 50%, #D9A6A0 100%);
+    }
+    
+    /* Effets de dorure subtils */
+    .gold-accent::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #C8A96E, transparent);
+      opacity: 0.7;
+    }
+    
+    .gold-shimmer {
+      background: linear-gradient(45deg, transparent 30%, rgba(200,169,110,0.3) 50%, transparent 70%);
+      background-size: 200% 200%;
+      animation: shimmer 3s infinite;
+    }
+    
+    @keyframes shimmer {
+      0%, 100% { background-position: -200% 0; }
+      50% { background-position: 200% 0; }
+    }
+    
+    /* Fontaine vénitienne */
+    .venetian-fountain {
+      background: linear-gradient(135deg, 
+        #8B0000 0%, #A0522D 20%, #FFFFFF 40%, #F5F5DC 60%, #8B0000 80%, #A0522D 100%);
+      background-size: 400% 400%;
+      animation: marbleFlow 8s ease-in-out infinite;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    @keyframes marbleFlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    
+    .water-drop {
+      position: absolute;
+      width: 4px;
+      height: 20px;
+      background: linear-gradient(to bottom, transparent, rgba(173,216,230,0.8), rgba(135,206,235,0.9));
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      animation: waterfall 2s linear infinite;
+    }
+    
+    @keyframes waterfall {
+      0% { transform: translateY(-20px); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(100px); opacity: 0; }
+    }
+    
+    .fountain-spout {
+      position: relative;
+      height: 80px;
+      background: linear-gradient(to bottom, #8B0000, #A0522D);
+      border: 2px solid #C8A96E;
+      border-radius: 10px;
+    }
+    
+    .water-pool {
+      background: linear-gradient(45deg, rgba(173,216,230,0.3), rgba(135,206,235,0.4));
+      border-radius: 50%;
+      animation: ripple 2s ease-in-out infinite;
+    }
+    
+    @keyframes ripple {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.05); opacity: 0.9; }
+    }
+  </style>
+</head>
+<body class="bg-trianon-ivory text-trianon-ebony font-sans scroll-smooth">
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 w-full bg-trianon-ivory/95 backdrop-blur-sm z-50 border-b border-trianon-ebony/10">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="h-8 w-8 rounded-full bg-trianon-gold"></div>
+          <h1 class="font-deco text-xl text-trianon-ebony">Grand Trianon</h1>
+        </div>
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#suites" class="text-trianon-ebony/80 hover:text-trianon-jade transition">Suites</a>
+          <a href="#services" class="text-trianon-ebony/80 hover:text-trianon-jade transition">Services</a>
+          <a href="#restaurant" class="text-trianon-ebony/80 hover:text-trianon-jade transition">Restaurant</a>
+          <a href="#spa" class="text-trianon-ebony/80 hover:text-trianon-jade transition">Spa</a>
+          <button class="px-6 py-2 rounded-deco bg-trianon-gold text-trianon-ebony font-medium shadow-soft hover:brightness-110 transition">
+            Réserver
+          </button>
+        </div>
+        <button class="md:hidden p-2 rounded-lg bg-trianon-pearl">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 hero-pattern opacity-70"></div>
+    <div class="relative z-10 max-w-6xl mx-auto px-6 text-center">
+      <div class="inline-flex items-center gap-2 rounded-deco px-4 py-2 bg-trianon-ebony/80 text-trianon-ivory shadow-soft mb-6">
+        <span class="h-2 w-2 rounded-full bg-trianon-gold"></span>
+        <span class="text-sm tracking-widest uppercase">Hôtel de Prestige</span>
+      </div>
+      <h1 class="font-deco text-5xl md:text-7xl tracking-tight mb-6 text-trianon-ivory">
+        L'Art de Vivre<br>à la Française
+      </h1>
+      <p class="text-xl md:text-2xl text-trianon-ivory/90 max-w-3xl mx-auto mb-8">
+        Découvrez l'élégance intemporelle dans notre hôtel inspiré par les fastes de Versailles, 
+        où chaque détail respire le raffinement et l'excellence.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button class="px-8 py-4 rounded-deco bg-trianon-gold text-trianon-ebony font-medium shadow-deco hover:brightness-110 transition text-lg">
+          Réserver votre séjour
+        </button>
+        <button class="px-8 py-4 rounded-deco border-2 border-trianon-ivory text-trianon-ivory hover:bg-trianon-ivory hover:text-trianon-ebony transition text-lg">
+          Découvrir l'hôtel
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Suites Section -->
+  <section id="suites" class="py-20">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="font-deco text-4xl md:text-5xl mb-6">Nos Suites d'Exception</h2>
+        <p class="text-xl text-trianon-ebony/80 max-w-3xl mx-auto">
+          Chaque suite est un écrin de luxe, alliant patrimoine historique et confort contemporain
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Suite Impériale -->
+        <article class="rounded-deco overflow-hidden shadow-deco bg-trianon-ivory border border-trianon-ebony/10">
+          <div class="h-64 marble-gradient"></div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-deco text-2xl">Suite Impériale</h3>
+              <span class="px-3 py-1 rounded-full text-xs bg-trianon-gold text-trianon-ebony font-medium">Premium</span>
+            </div>
+            <p class="text-trianon-ebony/80 mb-4">
+              120m² de pure élégance avec vue sur les jardins à la française. Mobilier d'époque et marbre rose de Trianon.
+            </p>
+            <div class="flex items-center justify-between">
+              <span class="font-deco text-2xl text-trianon-jade">850€</span>
+              <button class="px-4 py-2 rounded-deco bg-trianon-jade text-trianon-ivory font-medium hover:brightness-110 transition">
+                Voir détails
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Suite Royale -->
+        <article class="rounded-deco overflow-hidden shadow-deco bg-trianon-ivory border border-trianon-ebony/10">
+          <div class="h-64 bg-trianon-jade"></div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-deco text-2xl">Suite Royale</h3>
+              <span class="px-3 py-1 rounded-full text-xs bg-trianon-gilt text-trianon-ivory font-medium">Luxe</span>
+            </div>
+            <p class="text-trianon-ebony/80 mb-4">
+              80m² aux tons jade et or, avec salon privatif et terrasse. L'harmonie parfaite entre nature et raffinement.
+            </p>
+            <div class="flex items-center justify-between">
+              <span class="font-deco text-2xl text-trianon-jade">650€</span>
+              <button class="px-4 py-2 rounded-deco bg-trianon-jade text-trianon-ivory font-medium hover:brightness-110 transition">
+                Voir détails
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Suite Précieuse -->
+        <article class="rounded-deco overflow-hidden shadow-deco bg-trianon-ivory border border-trianon-ebony/10">
+          <div class="h-64 bg-trianon-malachite"></div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-deco text-2xl">Suite Précieuse</h3>
+              <span class="px-3 py-1 rounded-full text-xs bg-trianon-orchid text-trianon-ivory font-medium">Charme</span>
+            </div>
+            <p class="text-trianon-ebony/80 mb-4">
+              55m² intimistes aux accents malachite et rose poudré. Boudoir cosy et salle de bain en marbre sculpté.
+            </p>
+            <div class="flex items-center justify-between">
+              <span class="font-deco text-2xl text-trianon-jade">450€</span>
+              <button class="px-4 py-2 rounded-deco bg-trianon-jade text-trianon-ivory font-medium hover:brightness-110 transition">
+                Voir détails
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="services" class="py-20 bg-trianon-pearl/50">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="font-deco text-4xl md:text-5xl mb-6">Services d'Excellence</h2>
+        <p class="text-xl text-trianon-ebony/80 max-w-3xl mx-auto">
+          Un art de vivre qui se décline dans chaque service, pour une expérience inoubliable
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="text-center">
+          <div class="w-16 h-16 rounded-full bg-trianon-gold mx-auto mb-4 flex items-center justify-center">
+            <svg class="w-8 h-8 text-trianon-ebony" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+            </svg>
+          </div>
+          <h3 class="font-deco text-xl mb-2">Conciergerie 24h/24</h3>
+          <p class="text-trianon-ebony/80">Service personnalisé pour tous vos souhaits</p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-16 h-16 rounded-full bg-trianon-jade mx-auto mb-4 flex items-center justify-center">
+            <svg class="w-8 h-8 text-trianon-ivory" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <h3 class="font-deco text-xl mb-2">Spa &amp; Bien-être</h3>
+          <p class="text-trianon-ebony/80">Soins sur-mesure dans un écrin de sérénité</p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-16 h-16 rounded-full bg-trianon-orchid mx-auto mb-4 flex items-center justify-center">
+            <svg class="w-8 h-8 text-trianon-ivory" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+          </div>
+          <h3 class="font-deco text-xl mb-2">Majordome privé</h3>
+          <p class="text-trianon-ebony/80">Service discret et attentionné</p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-16 h-16 rounded-full bg-trianon-gilt mx-auto mb-4 flex items-center justify-center">
+            <svg class="w-8 h-8 text-trianon-ivory" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="font-deco text-xl mb-2">Transport privé</h3>
+          <p class="text-trianon-ebony/80">Flotte de véhicules de prestige</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Restaurant Section -->
+  <section id="restaurant" class="py-20">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="font-deco text-4xl md:text-5xl mb-6">Gastronomie d'Exception</h2>
+          <p class="text-xl text-trianon-ebony/80 mb-6">
+            Notre chef étoilé sublime les produits d'exception dans un cadre inspiré des salons de Versailles.
+          </p>
+          <div class="space-y-4 mb-8">
+            <div class="flex items-center gap-3">
+              <span class="h-2 w-2 rounded-full bg-trianon-gold"></span>
+              <span>Menu dégustation 7 services</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="h-2 w-2 rounded-full bg-trianon-gold"></span>
+              <span>Cave de 15 000 références</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="h-2 w-2 rounded-full bg-trianon-gold"></span>
+              <span>Service en chambre 24h/24</span>
+            </div>
+          </div>
+          <button class="px-8 py-4 rounded-deco bg-trianon-jade text-trianon-ivory font-medium shadow-soft hover:brightness-110 transition">
+            Réserver une table
+          </button>
+        </div>
+        <div class="rounded-deco overflow-hidden shadow-deco">
+           <div class="h-96 marble-gradient relative">
+            <img src="chef.jpg" alt="Description de l'image" class="absolute inset-0 w-full h-full object-cover opacity-80" />
+          </div>  
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="py-20 bg-trianon-ebony text-trianon-ivory relative overflow-hidden">
+    <div class="absolute inset-0 opacity-20 hero-pattern"></div>
+    <div class="relative z-10 max-w-7xl mx-auto px-6 text-center">
+      <h2 class="font-deco text-4xl md:text-5xl mb-6">Réservez votre séjour d'exception</h2>
+      <p class="text-xl text-trianon-ivory/80 mb-8 max-w-3xl mx-auto">
+        Laissez-vous envoûter par l'art de vivre à la française dans notre écrin de luxe
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+        <button class="px-8 py-4 rounded-deco bg-trianon-gold text-trianon-ebony font-medium shadow-deco hover:brightness-110 transition text-lg">
+          +33 1 42 86 10 10
+        </button>
+        <button class="px-8 py-4 rounded-deco border-2 border-trianon-gold text-trianon-gold hover:bg-trianon-gold hover:text-trianon-ebony transition text-lg">
+          reservation@grandtrianon.fr
+        </button>
+      </div>
+      <div class="text-trianon-ivory/60">
+        <p>123 Avenue des Champs-Élysées, 75008 Paris</p>
+        <p class="mt-2">Métro: Franklin D. Roosevelt - Parking valet disponible</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-trianon-ivory border-t border-trianon-ebony/10 py-12">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="h-8 w-8 rounded-full bg-trianon-gold"></div>
+            <h3 class="font-deco text-xl">Grand Trianon</h3>
+          </div>
+          <p class="text-trianon-ebony/80">L'excellence hôtelière dans la tradition française</p>
+        </div>
+        <div>
+          <h4 class="font-medium mb-4">L'Hôtel</h4>
+          <ul class="space-y-2 text-trianon-ebony/80">
+            <li><a href="#" class="hover:text-trianon-jade transition">Nos suites</a></li>
+            <li><a href="#" class="hover:text-trianon-jade transition">Services</a></li>
+            <li><a href="#" class="hover:text-trianon-jade transition">Histoire</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-medium mb-4">Expériences</h4>
+          <ul class="space-y-2 text-trianon-ebony/80">
+            <li><a href="#" class="hover:text-trianon-jade transition">Restaurant</a></li>
+            <li><a href="#" class="hover:text-trianon-jade transition">Spa</a></li>
+            <li><a href="#" class="hover:text-trianon-jade transition">Événements</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-medium mb-4">Contact</h4>
+          <ul class="space-y-2 text-trianon-ebony/80">
+            <li>+33 1 42 86 10 10</li>
+            <li>reservation@grandtrianon.fr</li>
+            <li>123 Ave des Champs-Élysées</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-trianon-ebony/10 pt-8 text-center text-trianon-ebony/60">
+        <p>© 2024 Hôtel Grand Trianon. Tous droits réservés.</p>
+      </div>
+    </div>
+  </footer>
+
+
+
+</body></html>
