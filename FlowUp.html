@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowUp - Assistant Personnel Intelligent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        'primary-dark': '#4B4BC8',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="h-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-sans">
+    <div id="app" class="flex h-full">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h1 class="text-xl font-bold text-primary">FlowUp</h1>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Assistant Personnel IA</p>
+            </div>
+            
+            <nav class="flex-1 p-4 space-y-2">
+                <button onclick="showTab('dashboard')" class="nav-item w-full text-left p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center space-x-3">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Tableau de Bord</span>
+                </button>
+                <button onclick="showTab('tasks')" class="nav-item w-full text-left p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center space-x-3">
+                    <i class="fas fa-tasks"></i>
+                    <span>Tâches</span>
+                </button>
+                <button onclick="showTab('calendar')" class="nav-item w-full text-left p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center space-x-3">
+                    <i class="fas fa-calendar"></i>
+                    <span>Planning</span>
+                </button>
+                <button onclick="showTab('knowledge')" class="nav-item w-full text-left p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center space-x-3">
+                    <i class="fas fa-brain"></i>
+                    <span>Base de Connaissances</span>
+                </button>
+                <button onclick="showTab('ai')" class="nav-item w-full text-left p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center space-x-3">
+                    <i class="fas fa-robot"></i>
+                    <span>IA Assistant</span>
+                </button>
+                <button onclick="showTab('plugins')" class="nav-item w-full text-left p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center space-x-3">
+                    <i class="fas fa-puzzle-piece"></i>
+                    <span>Plugins IA</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 flex justify-between items-center">
+                <h2 id="page-title" class="text-xl font-semibold">Tableau de Bord</h2>
+                <div class="flex items-center space-x-4">
+                    <div id="ai-suggestions" class="hidden bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                        <i class="fas fa-lightbulb mr-1"></i>
+                        <span id="suggestion-text"></span>
+                    </div>
+                    <button onclick="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <main class="flex-1 overflow-auto p-6">
+                <!-- Dashboard Tab -->
+                <div id="dashboard-tab" class="tab-content">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold mb-2 flex items-center">
+                                <i class="fas fa-tasks mr-2 text-primary"></i>
+                                Tâches Aujourd'hui
+                            </h3>
+                            <div class="text-3xl font-bold text-primary" id="today-tasks-count">0</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400" id="today-tasks-progress">0% complétées</div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold mb-2 flex items-center">
+                                <i class="fas fa-chart-line mr-2 text-green-500"></i>
+                                Productivité
+                            </h3>
+                            <div class="text-3xl font-bold text-green-500" id="productivity-score">85%</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Score du jour</div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold mb-2 flex items-center">
+                                <i class="fas fa-calendar-check mr-2 text-blue-500"></i>
+                                Événements
+                            </h3>
+                            <div class="text-3xl font-bold text-blue-500" id="today-events-count">0</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Rendez-vous aujourd'hui</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold mb-4">Résumé IA du Planning</h3>
+                            <div id="planning-summary" class="text-gray-600 dark:text-gray-400">
+                                Analysing votre planning...
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold mb-4">Suggestions IA</h3>
+                            <div id="ai-recommendations" class="space-y-2">
+                                <div class="text-gray-600 dark:text-gray-400">Chargement des recommandations...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tasks Tab -->
+                <div id="tasks-tab" class="tab-content hidden">
+                    <div class="mb-6 flex flex-col sm:flex-row gap-4">
+                        <input type="text" id="new-task" placeholder="Nouvelle tâche..." class="flex-1 px-4 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-800">
+                        <select id="task-priority" class="px-4 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
+                            <option value="low">Priorité Faible</option>
+                            <option value="medium" selected>Priorité Moyenne</option>
+                            <option value="high">Priorité Haute</option>
+                        </select>
+                        <input type="date" id="task-due" class="px-4 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
+                        <button onclick="addTask()" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">
+                            <i class="fas fa-plus mr-2"></i>Ajouter
+                        </button>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                        <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                            <h3 class="text-lg font-semibold">Mes Tâches</h3>
+                            <button onclick="sortTasksByAI()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark text-sm">
+                                <i class="fas fa-brain mr-2"></i>Tri IA
+                            </button>
+                        </div>
+                        <div id="tasks-list" class="divide-y divide-gray-200 dark:divide-gray-700">
+                            <!-- Tasks will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calendar Tab -->
+                <div id="calendar-tab" class="tab-content hidden">
+                    <div class="mb-6 flex flex-col sm:flex-row gap-4">
+                        <input type="text" id="new-event-title" placeholder="Titre de l'événement..." class="flex-1 px-4 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
+                        <input type="datetime-local" id="new-event-date" class="px-4 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
+                        <input type="number" id="new-event-duration" placeholder="Durée (min)" min="15" step="15" value="60" class="px-4 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 w-32">
+                        <button onclick="addEvent()" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">
+                            <i class="fas fa-plus mr-2"></i>Ajouter
+                        </button>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold">Planning</h3>
+                        </div>
+                        <div id="events-list" class="divide-y divide-gray-200 dark:divide-gray-700 p-4">
+                            <!-- Events will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Knowledge Base Tab -->
+                <div id="knowledge-tab" class="tab-content hidden">
+                    <div class="mb-6 flex gap-4">
+                        <input type="text" id="knowledge-search" placeholder="Rechercher dans la base de connaissances..." class="flex-1 px-4 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
+                        <button onclick="searchKnowledge()" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">
+                            <i class="fas fa-search mr-2"></i>Rechercher
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold mb-4">Ajouter une Note</h3>
+                            <input type="text" id="note-title" placeholder="Titre de la note..." class="w-full px-4 py-2 text-base mb-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
+                            <textarea id="note-content" placeholder="Contenu de la note..." rows="6" class="w-full px-4 py-2 text-base mb-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800"></textarea>
+                            <input type="text" id="note-tags" placeholder="Tags (séparés par des virgules)..." class="w-full px-4 py-2 text-base mb-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
+                            <button onclick="addNote()" class="w-full px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">
+                                <i class="fas fa-save mr-2"></i>Sauvegarder
+                            </button>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                            <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                                <h3 class="text-lg font-semibold">Mes Notes</h3>
+                            </div>
+                            <div id="notes-list" class="p-4 max-h-96 overflow-y-auto">
+                                <!-- Notes will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Assistant Tab -->
+                <div id="ai-tab" class="tab-content hidden">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold">Assistant IA FlowUp</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Posez vos questions sur votre productivité</p>
+                        </div>
+                        <div id="ai-chat" class="p-4 h-96 overflow-y-auto space-y-4">
+                            <div class="ai-message">
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                        <i class="fas fa-robot text-white text-sm"></i>
+                                    </div>
+                                    <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg max-w-md">
+                                        Bonjour ! Je suis votre assistant IA FlowUp. Je peux vous aider à analyser votre productivité, planifier vos tâches, et vous donner des conseils personnalisés. Comment puis-je vous aider aujourd'hui ?
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+                            <div class="flex gap-2">
+                                <input type="text" id="ai-input" placeholder="Posez votre question..." class="flex-1 px-4 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800" onkeypress="handleAIEnter(event)">
+                                <button onclick="sendAIMessage()" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plugins Tab -->
+                <div id="plugins-tab" class="tab-content hidden">
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold mb-4">Plugins IA Disponibles</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="plugins-grid">
+                            <!-- Plugins will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-semibold mb-4">Ajouter un Plugin Custom</h3>
+                        <input type="text" id="plugin-name" placeholder="Nom du plugin..." class="w-full px-4 py-2 text-base mb-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
+                        <textarea id="plugin-code" placeholder="Code JavaScript du plugin..." rows="10" class="w-full px-4 py-2 text-base mb-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 font-mono"></textarea>
+                        <button onclick="addCustomPlugin()" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">
+                            <i class="fas fa-plus mr-2"></i>Ajouter Plugin
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode functionality
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        // Data storage (simulating database)
+        let appData = {
+            tasks: [],
+            events: [],
+            notes: [],
+            plugins: [],
+            habits: {
+                completedTasks: 0,
+                totalTasks: 0,
+                productivityHistory: []
+            }
+        };
+
+        // Load data from memory (localStorage not available in sandbox)
+        function loadData() {
+            // Data is already initialized in appData
+            console.log('Données chargées depuis la mémoire');
+        }
+
+        // Save data to memory (localStorage not available in sandbox)
+        function saveData() {
+            // Data is automatically saved in appData
+            console.log('Données sauvegardées en mémoire');
+        }
+
+        // Navigation
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Remove active class from nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('bg-primary', 'text-white');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            
+            // Find and activate the corresponding nav item
+            const navItems = document.querySelectorAll('.nav-item');
+            const tabIndex = {
+                dashboard: 0,
+                tasks: 1,
+                calendar: 2,
+                knowledge: 3,
+                ai: 4,
+                plugins: 5
+            };
+            
+            if (navItems[tabIndex[tabName]]) {
+                navItems[tabIndex[tabName]].classList.add('bg-primary', 'text-white');
+            }
+            
+            // Update page title
+            const titles = {
+                dashboard: 'Tableau de Bord',
+                tasks: 'Gestion des Tâches',
+                calendar: 'Planning & Calendrier',
+                knowledge: 'Base de Connaissances',
+                ai: 'Assistant IA',
+                plugins: 'Plugins IA'
+            };
+            document.getElementById('page-title').textContent = titles[tabName];
+            
+            // Update tab-specific content
+            if (tabName === 'dashboard') {
+                updateDashboard();
+            } else if (tabName === 'tasks') {
+                renderTasks();
+            } else if (tabName === 'calendar') {
+                renderEvents();
+            } else if (tabName === 'knowledge') {
+                renderNotes();
+            } else if (tabName === 'plugins') {
+                renderPlugins();
+            }
+        }
+
+        // Task Management
+        function addTask() {
+            const title = document.getElementById('new-task').value.trim();
+            const priority = document.getElementById('task-priority').value;
+            const dueDate = document.getElementById('task-due').value;
+            
+            if (!title) return;
+            
+            const task = {
+                id: Date.now(),
+                title,
+                priority,
+                dueDate,
+                completed: false,
+                createdAt: new Date(),
+                aiScore: calculateAIScore(title, priority, dueDate)
+            };
+            
+            appData.tasks.push(task);
+            appData.habits.totalTasks++;
+            saveData();
+            renderTasks();
+            
+            // Clear form
+            document.getElementById('new-task').value = '';
+            document.getElementById('task-due').value = '';
+            
+            // Show AI suggestion
+            showAISuggestion("Nouvelle tâche ajoutée avec succès ! Priorité: " + priority);
+        }
+
+        function calculateAIScore(title, priority, dueDate) {
+            let score = 0;
+            
+            // Priority weight
+            const priorityWeights = { high: 3, medium: 2, low: 1 };
+            score += priorityWeights[priority] * 10;
+            
+            // Urgency weight (based on due date)
+            if (dueDate) {
+                const due = new Date(dueDate);
+                const now = new Date();
+                const daysUntilDue = (due - now) / (1000 * 60 * 60 * 24);
+                
+                if (daysUntilDue <= 1) score += 20;
+                else if (daysUntilDue <= 3) score += 15;
+                else if (daysUntilDue <= 7) score += 10;
+                else score += 5;
+            }
+            
+            // Keyword analysis for complexity
+            const complexKeywords = ['projet', 'présentation', 'rapport', 'analyse', 'développer'];
+            const urgentKeywords = ['urgent', 'important', 'deadline', 'asap'];
+            
+            complexKeywords.forEach(keyword => {
+                if (title.toLowerCase().includes(keyword)) score += 5;
+            });
+            
+            urgentKeywords.forEach(keyword => {
+                if (title.toLowerCase().includes(keyword)) score += 10;
+            });
+            
+            return score;
+        }
+
+        function sortTasksByAI() {
+            appData.tasks.sort((a, b) => {
+                if (a.completed && !b.completed) return 1;
+                if (!a.completed && b.completed) return -1;
+                return b.aiScore - a.aiScore;
+            });
+            renderTasks();
+            showAISuggestion("Tâches triées par ordre de priorité intelligent !");
+        }
+
+        function toggleTask(id) {
+            const task = appData.tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                if (task.completed) {
+                    appData.habits.completedTasks++;
+                }
+                saveData();
+                renderTasks();
+                updateDashboard();
+            }
+        }
+
+        function deleteTask(id) {
+            appData.tasks = appData.tasks.filter(t => t.id !== id);
+            saveData();
+            renderTasks();
+            updateDashboard();
+        }
+
+        function renderTasks() {
+            const container = document.getElementById('tasks-list');
+            container.innerHTML = '';
+            
+            if (appData.tasks.length === 0) {
+                container.innerHTML = '<div class="p-4 text-gray-500 text-center">Aucune tâche. Ajoutez votre première tâche !</div>';
+                return;
+            }
+            
+            appData.tasks.forEach(task => {
+                const taskElement = document.createElement('div');
+                taskElement.className = `p-4 flex items-center justify-between ${task.completed ? 'opacity-50' : ''}`;
+                
+                const priorityColors = {
+                    high: 'text-red-500',
+                    medium: 'text-yellow-500',
+                    low: 'text-green-500'
+                };
+                
+                const dueText = task.dueDate ? new Date(task.dueDate).toLocaleDateString('fr-FR') : '';
+                
+                taskElement.innerHTML = `
+                    <div class="flex items-center space-x-3 flex-1">
+                        <input type="checkbox" ${task.completed ? 'checked' : ''} 
+                               onchange="toggleTask(${task.id})"
+                               class="w-4 h-4 text-primary rounded focus:ring-primary">
+                        <div class="flex-1">
+                            <div class="font-medium ${task.completed ? 'line-through' : ''}">${task.title}</div>
+                            ${dueText ? `<div class="text-sm text-gray-500">Échéance: ${dueText}</div>` : ''}
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2 py-1 text-xs rounded-full ${priorityColors[task.priority]} bg-current bg-opacity-10">
+                                ${task.priority === 'high' ? 'Haute' : task.priority === 'medium' ? 'Moyenne' : 'Faible'}
+                            </span>
+                            <span class="text-xs text-gray-400">IA: ${task.aiScore}</span>
+                        </div>
+                    </div>
+                    <button onclick="deleteTask(${task.id})" class="text-red-500 hover:text-red-700 ml-4">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                
+                container.appendChild(taskElement);
+            });
+        }
+
+        // Event Management
+        function addEvent() {
+            const title = document.getElementById('new-event-title').value.trim();
+            const dateTime = document.getElementById('new-event-date').value;
+            const duration = parseInt(document.getElementById('new-event-duration').value) || 60;
+            
+            if (!title || !dateTime) return;
+            
+            const event = {
+                id: Date.now(),
+                title,
+                dateTime: new Date(dateTime),
+                duration,
+                createdAt: new Date()
+            };
+            
+            appData.events.push(event);
+            saveData();
+            renderEvents();
+            
+            // Clear form
+            document.getElementById('new-event-title').value = '';
+            document.getElementById('new-event-date').value = '';
+            
+            showAISuggestion("Événement ajouté ! Durée: " + duration + " minutes");
+        }
+
+        function deleteEvent(id) {
+            appData.events = appData.events.filter(e => e.id !== id);
+            saveData();
+            renderEvents();
+            updateDashboard();
+        }
+
+        function renderEvents() {
+            const container = document.getElementById('events-list');
+            container.innerHTML = '';
+            
+            if (appData.events.length === 0) {
+                container.innerHTML = '<div class="text-gray-500 text-center">Aucun événement planifié</div>';
+                return;
+            }
+            
+            const sortedEvents = [...appData.events].sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime));
+            
+            sortedEvents.forEach(event => {
+                const eventElement = document.createElement('div');
+                eventElement.className = 'flex items-center justify-between p-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded';
+                
+                const eventDate = new Date(event.dateTime);
+                const isToday = eventDate.toDateString() === new Date().toDateString();
+                
+                eventElement.innerHTML = `
+                    <div>
+                        <div class="font-medium">${event.title}</div>
+                        <div class="text-sm text-gray-500">
+                            ${eventDate.toLocaleDateString('fr-FR')} à ${eventDate.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})}
+                            (${event.duration} min)
+                            ${isToday ? '<span class="text-primary font-medium">• Aujourd\'hui</span>' : ''}
+                        </div>
+                    </div>
+                    <button onclick="deleteEvent(${event.id})" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                
+                container.appendChild(eventElement);
+            });
+        }
+
+        // Knowledge Base
+        function addNote() {
+            const title = document.getElementById('note-title').value.trim();
+            const content = document.getElementById('note-content').value.trim();
+            const tags = document.getElementById('note-tags').value.trim();
+            
+            if (!title || !content) return;
+            
+            const note = {
+                id: Date.now(),
+                title,
+                content,
+                tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+                createdAt: new Date()
+            };
+            
+            appData.notes.push(note);
+            saveData();
+            renderNotes();
+            
+            // Clear form
+            document.getElementById('note-title').value = '';
+            document.getElementById('note-content').value = '';
+            document.getElementById('note-tags').value = '';
+        }
+
+        function deleteNote(id) {
+            appData.notes = appData.notes.filter(n => n.id !== id);
+            saveData();
+            renderNotes();
+        }
+
+        function searchKnowledge() {
+            const query = document.getElementById('knowledge-search').value.toLowerCase();
+            const filteredNotes = appData.notes.filter(note => 
+                note.title.toLowerCase().includes(query) ||
+                note.content.toLowerCase().includes(query) ||
+                note.tags.some(tag => tag.toLowerCase().includes(query))
+            );
+            renderNotes(filteredNotes);
+        }
+
+        function renderNotes(notes = appData.notes) {
+            const container = document.getElementById('notes-list');
+            container.innerHTML = '';
+            
+            if (notes.length === 0) {
+                container.innerHTML = '<div class="text-gray-500 text-center">Aucune note trouvée</div>';
+                return;
+            }
+            
+            notes.forEach(note => {
+                const noteElement = document.createElement('div');
+                noteElement.className = 'border-b border-gray-200 dark:border-gray-700 pb-4 mb-4 last:border-b-0';
+                
+                noteElement.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-medium">${note.title}</h4>
+                        <button onclick="deleteNote(${note.id})" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-trash text-sm"></i>
+                        </button>
+                    </div>
+                    <div class="text-gray-600 dark:text-gray-400 text-sm mb-2">${note.content}</div>
+                    ${note.tags.length > 0 ? `
+                        <div class="flex flex-wrap gap-1">
+                            ${note.tags.map(tag => `<span class="px-2 py-1 bg-primary/10 text-primary text-xs rounded">${tag}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="text-xs text-gray-400 mt-2">${note.createdAt.toLocaleDateString('fr-FR')}</div>
+                `;
+                
+                container.appendChild(noteElement);
+            });
+        }
+
+        // AI Assistant
+        function handleAIEnter(event) {
+            if (event.key === 'Enter') {
+                sendAIMessage();
+            }
+        }
+
+        function sendAIMessage() {
+            const input = document.getElementById('ai-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            addAIMessage(message, 'user');
+            input.value = '';
+            
+            // Process AI response
+            setTimeout(() => {
+                const response = processAIQuery(message);
+                addAIMessage(response, 'ai');
+            }, 1000);
+        }
+
+        function addAIMessage(message, sender) {
+            const chat = document.getElementById('ai-chat');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = sender === 'user' ? 'user-message' : 'ai-message';
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="flex items-start space-x-3 justify-end">
+                        <div class="bg-primary text-white p-3 rounded-lg max-w-md">
+                            ${message}
+                        </div>
+                        <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-gray-600 text-sm"></i>
+                        </div>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                            <i class="fas fa-robot text-white text-sm"></i>
+                        </div>
+                        <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg max-w-md">
+                            ${message}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            chat.appendChild(messageDiv);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function processAIQuery(query) {
+            const lowerQuery = query.toLowerCase();
+            
+            // Analyze user data
+            const totalTasks = appData.tasks.length;
+            const completedTasks = appData.tasks.filter(t => t.completed).length;
+            const pendingTasks = totalTasks - completedTasks;
+            const todayEvents = appData.events.filter(e => 
+                new Date(e.dateTime).toDateString() === new Date().toDateString()
+            ).length;
+            
+            // Query analysis
+            if (lowerQuery.includes('productivité') || lowerQuery.includes('performance')) {
+                const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+                return `Votre taux de complétion des tâches est de ${completionRate}%. Vous avez ${pendingTasks} tâches en attente. ${completionRate > 70 ? 'Excellente productivité !' : 'Vous pouvez améliorer votre productivité en priorisant les tâches importantes.'}`;
+            }
+            
+            if (lowerQuery.includes('tâche') || lowerQuery.includes('planning')) {
+                const highPriorityTasks = appData.tasks.filter(t => !t.completed && t.priority === 'high').length;
+                return `Vous avez ${pendingTasks} tâches en attente, dont ${highPriorityTasks} à haute priorité. ${highPriorityTasks > 0 ? 'Je recommande de commencer par les tâches prioritaires.' : 'Bon travail sur la gestion des priorités !'}`;
+            }
+            
+            if (lowerQuery.includes('aujourd\'hui') || lowerQuery.includes('agenda')) {
+                return `Aujourd'hui vous avez ${todayEvents} événement(s) planifié(s) et ${pendingTasks} tâches en attente. ${todayEvents > 3 ? 'Journée bien remplie ! Assurez-vous de prévoir des pauses.' : 'Planning gérable pour aujourd\'hui.'}`;
+            }
+            
+            if (lowerQuery.includes('conseil') || lowerQuery.includes('aide')) {
+                return generateAIAdvice();
+            }
+            
+            if (lowerQuery.includes('résumé') || lowerQuery.includes('analyse')) {
+                return generatePlanSummary();
+            }
+            
+            // Default response
+            return "Je peux vous aider avec l'analyse de votre productivité, la gestion de vos tâches, et la planification. Essayez de me demander votre productivité, vos tâches du jour, ou des conseils !";
+        }
+
+        function generateAIAdvice() {
+            const advice = [
+                "Concentrez-vous sur 3 tâches importantes par jour maximum.",
+                "Prenez des pauses de 15 minutes toutes les 2 heures pour maintenir votre concentration.",
+                "Planifiez vos tâches les plus difficiles pendant vos heures de pic d'énergie.",
+                "Utilisez la technique Pomodoro pour améliorer votre focus.",
+                "Préparez votre planning la veille pour commencer efficacement le lendemain."
+            ];
+            
+            const randomAdvice = advice[Math.floor(Math.random() * advice.length)];
+            return `💡 Conseil personnalisé : ${randomAdvice}`;
+        }
+
+        // AI Planning Summary (Core feature)
+        function generatePlanSummary() {
+            const today = new Date();
+            const todayTasks = appData.tasks.filter(t => {
+                if (!t.dueDate) return false;
+                return new Date(t.dueDate).toDateString() === today.toDateString();
+            });
+            
+            const todayEvents = appData.events.filter(e => 
+                new Date(e.dateTime).toDateString() === today.toDateString()
+            );
+            
+            const upcomingTasks = appData.tasks.filter(t => {
+                if (!t.dueDate || t.completed) return false;
+                const due = new Date(t.dueDate);
+                return due > today && due <= new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+            });
+            
+            let summary = "📊 **Analyse IA de votre planning:**\n\n";
+            
+            // Today's analysis
+            summary += `**Aujourd'hui (${today.toLocaleDateString('fr-FR')}):**\n`;
+            summary += `• ${todayTasks.length} tâche(s) à accomplir\n`;
+            summary += `• ${todayEvents.length} événement(s) planifié(s)\n`;
+            
+            if (todayEvents.length > 0) {
+                const totalDuration = todayEvents.reduce((sum, e) => sum + e.duration, 0);
+                summary += `• Temps total en réunions: ${Math.round(totalDuration / 60)}h${totalDuration % 60}min\n`;
+            }
+            
+            // Workload analysis
+            const workloadScore = (todayTasks.length * 2) + (todayEvents.length * 1.5);
+            if (workloadScore > 8) {
+                summary += "\n⚠️ **Charge de travail élevée** - Considérez reporter certaines tâches non urgentes.\n";
+            } else if (workloadScore < 3) {
+                summary += "\n✅ **Charge de travail légère** - Bonne opportunité pour avancer sur des projets long terme.\n";
+            } else {
+                summary += "\n✅ **Charge de travail équilibrée** - Planning optimal pour la productivité.\n";
+            }
+            
+            // Upcoming week preview
+            if (upcomingTasks.length > 0) {
+                summary += `\n**Semaine à venir:**\n`;
+                summary += `• ${upcomingTasks.length} tâche(s) programmée(s)\n`;
+                
+                const urgentTasks = upcomingTasks.filter(t => {
+                    const due = new Date(t.dueDate);
+                    return due <= new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000);
+                });
+                
+                if (urgentTasks.length > 0) {
+                    summary += `• ${urgentTasks.length} tâche(s) urgente(s) dans les 3 prochains jours\n`;
+                }
+            }
+            
+            return summary;
+        }
+
+        // AI Suggestions
+        function showAISuggestion(text) {
+            const suggestionElement = document.getElementById('ai-suggestions');
+            const textElement = document.getElementById('suggestion-text');
+            
+            textElement.textContent = text;
+            suggestionElement.classList.remove('hidden');
+            
+            setTimeout(() => {
+                suggestionElement.classList.add('hidden');
+            }, 5000);
+        }
+
+        function generateDailyRecommendations() {
+            const recommendations = [];
+            
+            const pendingHighPriority = appData.tasks.filter(t => !t.completed && t.priority === 'high');
+            if (pendingHighPriority.length > 0) {
+                recommendations.push(`🎯 Vous avez ${pendingHighPriority.length} tâche(s) haute priorité en attente`);
+            }
+            
+            const overdueTasks = appData.tasks.filter(t => {
+                if (!t.dueDate || t.completed) return false;
+                return new Date(t.dueDate) < new Date();
+            });
+            
+            if (overdueTasks.length > 0) {
+                recommendations.push(`⏰ ${overdueTasks.length} tâche(s) en retard nécessitent votre attention`);
+            }
+            
+            const today = new Date();
+            const todayEvents = appData.events.filter(e => 
+                new Date(e.dateTime).toDateString() === today.toDateString()
+            );
+            
+            if (todayEvents.length > 0) {
+                const nextEvent = todayEvents.sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime))[0];
+                const timeUntilNext = Math.max(0, (new Date(nextEvent.dateTime) - new Date()) / (1000 * 60));
+                
+                if (timeUntilNext < 60 && timeUntilNext > 0) {
+                    recommendations.push(`📅 Prochain événement: "${nextEvent.title}" dans ${Math.round(timeUntilNext)} minutes`);
+                }
+            }
+            
+            if (recommendations.length === 0) {
+                recommendations.push("✅ Tout va bien ! Votre planning est sous contrôle");
+            }
+            
+            return recommendations;
+        }
+
+        // Plugin System
+        const defaultPlugins = [
+            {
+                name: "Analyseur de Productivité",
+                description: "Analyse votre productivité et génère des rapports",
+                code: `
+function analyzeProductivity() {
+    const completed = appData.tasks.filter(t => t.completed).length;
+    const total = appData.tasks.length;
+    const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+    
+    return {
+        completionRate: rate,
+        totalTasks: total,
+        completedTasks: completed,
+        recommendation: rate > 80 ? "Excellente productivité !" : rate > 60 ? "Bonne productivité" : "Amélioration possible"
+    };
+}`,
+                enabled: true
+            },
+            {
+                name: "Optimiseur de Planning",
+                description: "Optimise votre planning en fonction de vos habitudes",
+                code: `
+function optimizeSchedule() {
+    const conflicts = [];
+    const events = [...appData.events].sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime));
+    
+    for (let i = 0; i < events.length - 1; i++) {
+        const current = events[i];
+        const next = events[i + 1];
+        const currentEnd = new Date(current.dateTime).getTime() + (current.duration * 60000);
+        const nextStart = new Date(next.dateTime).getTime();
+        
+        if (currentEnd > nextStart) {
+            conflicts.push({current: current.title, next: next.title});
+        }
+    }
+    
+    return {conflicts, suggestion: conflicts.length > 0 ? "Conflits détectés dans votre planning" : "Planning optimisé"};
+}`,
+                enabled: true
+            },
+            {
+                name: "Détecteur de Habitudes",
+                description: "Analyse vos habitudes de travail",
+                code: `
+function analyzeHabits() {
+    const tasksByHour = {};
+    const eventsByDay = {};
+    
+    appData.tasks.forEach(task => {
+        const hour = new Date(task.createdAt).getHours();
+        tasksByHour[hour] = (tasksByHour[hour] || 0) + 1;
+    });
+    
+    appData.events.forEach(event => {
+        const day = new Date(event.dateTime).getDay();
+        eventsByDay[day] = (eventsByDay[day] || 0) + 1;
+    });
+    
+    const peakHour = Object.keys(tasksByHour).reduce((a, b) => tasksByHour[a] > tasksByHour[b] ? a : b, 0);
+    const peakDay = Object.keys(eventsByDay).reduce((a, b) => eventsByDay[a] > eventsByDay[b] ? a : b, 0);
+    
+    return {
+        peakProductivityHour: peakHour,
+        busiestDay: ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'][peakDay] || 'N/A',
+        insight: \`Vous êtes plus productif à \${peakHour}h\`
+    };
+}`,
+                enabled: true
+            },
+            {
+                name: "Générateur de Motivation",
+                description: "Génère des messages motivationnels personnalisés",
+                code: `
+function generateMotivation() {
+    const quotes = [
+        "La productivité n'est jamais un accident. C'est toujours le résultat d'un engagement vers l'excellence.",
+        "Le succès est la somme de petits efforts répétés jour après jour.",
+        "La clé n'est pas de donner la priorité à votre agenda, mais d'agencer vos priorités.",
+        "Concentrez-vous sur ce qui compte vraiment et éliminez le reste.",
+        "La discipline est le pont entre vos objectifs et vos accomplissements."
+    ];
+    
+    const completedToday = appData.tasks.filter(t => 
+        t.completed && new Date(t.createdAt).toDateString() === new Date().toDateString()
+    ).length;
+    
+    const motivationLevel = completedToday > 3 ? "élevé" : completedToday > 1 ? "moyen" : "à booster";
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    
+    return {
+        quote: randomQuote,
+        motivationLevel,
+        message: \`Niveau de motivation: \${motivationLevel}. Vous avez complété \${completedToday} tâche(s) aujourd'hui !\`
+    };
+}`,
+                enabled: true
+            },
+            {
+                name: "Prédicteur de Charge",
+                description: "Prédit votre charge de travail future",
+                code: `
+function predictWorkload() {
+    const nextWeek = new Date();
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    
+    const upcomingTasks = appData.tasks.filter(t => {
+        if (!t.dueDate || t.completed) return false;
+        const due = new Date(t.dueDate);
+        return due <= nextWeek;
+    });
+    
+    const upcomingEvents = appData.events.filter(e => {
+        const eventDate = new Date(e.dateTime);
+        return eventDate >= new Date() && eventDate <= nextWeek;
+    });
+    
+    const workloadScore = (upcomingTasks.length * 2) + (upcomingEvents.length * 1.5);
+    const prediction = workloadScore > 15 ? "surchargée" : workloadScore > 8 ? "modérée" : "légère";
+    
+    return {
+        upcomingTasks: upcomingTasks.length,
+        upcomingEvents: upcomingEvents.length,
+        workloadScore,
+        prediction: \`Charge prévue: \${prediction}\`,
+        advice: workloadScore > 15 ? "Considérez déléguer ou reporter certaines tâches" : "Charge de travail gérable"
+    };
+}`,
+                enabled: true
+            }
+        ];
+
+        function initializePlugins() {
+            if (appData.plugins.length === 0) {
+                appData.plugins = [...defaultPlugins];
+                saveData();
+            }
+        }
+
+        function addCustomPlugin() {
+            const name = document.getElementById('plugin-name').value.trim();
+            const code = document.getElementById('plugin-code').value.trim();
+            
+            if (!name || !code) {
+                alert('Veuillez remplir le nom et le code du plugin');
+                return;
+            }
+            
+            const plugin = {
+                name,
+                description: "Plugin personnalisé",
+                code,
+                enabled: true,
+                custom: true
+            };
+            
+            appData.plugins.push(plugin);
+            saveData();
+            renderPlugins();
+            
+            document.getElementById('plugin-name').value = '';
+            document.getElementById('plugin-code').value = '';
+            
+            showAISuggestion("Plugin personnalisé ajouté avec succès !");
+        }
+
+        function togglePlugin(index) {
+            appData.plugins[index].enabled = !appData.plugins[index].enabled;
+            saveData();
+            renderPlugins();
+        }
+
+        function executePlugin(index) {
+            const plugin = appData.plugins[index];
+            if (!plugin.enabled) return;
+            
+            try {
+                // Execute plugin code in a safe context
+                const result = eval(`(function() { ${plugin.code}; return ${plugin.code.match(/function\s+(\w+)/)?.[1] || 'null'}; })()`);
+                if (typeof result === 'function') {
+                    const output = result();
+                    console.log(`Plugin "${plugin.name}" result:`, JSON.stringify(output));
+                    showAISuggestion(`Plugin "${plugin.name}" exécuté avec succès !`);
+                    return output;
+                }
+            } catch (error) {
+                console.error(`Plugin "${plugin.name}" error:`, error);
+                showAISuggestion(`Erreur dans le plugin "${plugin.name}"`);
+            }
+        }
+
+        function renderPlugins() {
+            const container = document.getElementById('plugins-grid');
+            container.innerHTML = '';
+            
+            appData.plugins.forEach((plugin, index) => {
+                const pluginCard = document.createElement('div');
+                pluginCard.className = `bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 ${plugin.enabled ? '' : 'opacity-50'}`;
+                
+                pluginCard.innerHTML = `
+                    <div class="flex items-start justify-between mb-2">
+                        <h4 class="font-medium text-sm">${plugin.name}</h4>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" ${plugin.enabled ? 'checked' : ''} 
+                                   onchange="togglePlugin(${index})" class="sr-only peer">
+                            <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                    </div>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 mb-3">${plugin.description}</p>
+                    <div class="flex space-x-2">
+                        <button onclick="executePlugin(${index})" 
+                                class="px-3 py-1 bg-primary text-white text-xs rounded hover:bg-primary-dark ${plugin.enabled ? '' : 'opacity-50 cursor-not-allowed'}"
+                                ${plugin.enabled ? '' : 'disabled'}>
+                            <i class="fas fa-play mr-1"></i>Exécuter
+                        </button>
+                        ${plugin.custom ? `
+                            <button onclick="deletePlugin(${index})" class="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600">
+                                <i class="fas fa-trash mr-1"></i>Supprimer
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                
+                container.appendChild(pluginCard);
+            });
+        }
+
+        function deletePlugin(index) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce plugin ?')) {
+                appData.plugins.splice(index, 1);
+                saveData();
+                renderPlugins();
+            }
+        }
+
+        // Dashboard updates
+        function updateDashboard() {
+            // Update task counts
+            const todayTasks = appData.tasks.filter(t => {
+                if (!t.dueDate) return false;
+                return new Date(t.dueDate).toDateString() === new Date().toDateString();
+            });
+            const completedTodayTasks = todayTasks.filter(t => t.completed);
+            
+            document.getElementById('today-tasks-count').textContent = todayTasks.length;
+            document.getElementById('today-tasks-progress').textContent = 
+                todayTasks.length > 0 ? `${Math.round((completedTodayTasks.length / todayTasks.length) * 100)}% complétées` : '0% complétées';
+            
+            // Update events count
+            const todayEvents = appData.events.filter(e => 
+                new Date(e.dateTime).toDateString() === new Date().toDateString()
+            );
+            document.getElementById('today-events-count').textContent = todayEvents.length;
+            
+            // Update productivity score (simulate based on completion rate)
+            const totalTasks = appData.tasks.length;
+            const completedTasks = appData.tasks.filter(t => t.completed).length;
+            const productivityScore = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            document.getElementById('productivity-score').textContent = productivityScore + '%';
+            
+            // Update planning summary
+            const summary = generatePlanSummary();
+            document.getElementById('planning-summary').innerHTML = marked.parse(summary);
+            
+            // Update AI recommendations
+            const recommendations = generateDailyRecommendations();
+            const recommendationsHtml = recommendations.map(rec => 
+                `<div class="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-700 rounded text-sm">
+                    <span>${rec}</span>
+                </div>`
+            ).join('');
+            document.getElementById('ai-recommendations').innerHTML = recommendationsHtml;
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            initializePlugins();
+            showTab('dashboard');
+            updateDashboard();
+            
+            // Set active nav item
+            document.querySelector('.nav-item').classList.add('bg-primary', 'text-white');
+        });
+    </script>
+</body>
+</html>
