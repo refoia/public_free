@@ -1,0 +1,651 @@
+<!DOCTYPE html><html lang="fr"><head><meta name="x-poe-datastore-behavior" content="local_only"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archives du Royaume Champignon - Mario Bros</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Fredoka+One:wght@400&amp;display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --mario-red: #e4002b;
+            --mario-blue: #0066cc;
+            --mario-yellow: #ffcc00;
+            --mario-green: #00aa00;
+            --background-blue: #5c94fc;
+            --cloud-white: #ffffff;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --pipe-green: #00bb00;
+            --coin-gold: #ffd700;
+            --font-main: 'Inter', sans-serif;
+            --font-mario: 'Fredoka One', cursive;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: linear-gradient(135deg, #87ceeb 0%, #5c94fc 50%, #4169e1 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        /* Nuages animés en arrière-plan */
+        body::before {
+            content: '☁️ ☁️ ☁️ ☁️ ☁️';
+            position: fixed;
+            top: 10%;
+            left: -100px;
+            font-size: 30px;
+            animation: cloudMove 20s linear infinite;
+            z-index: -1;
+            opacity: 0.7;
+        }
+
+        body::after {
+            content: '☁️ ☁️ ☁️';
+            position: fixed;
+            top: 60%;
+            right: -100px;
+            font-size: 25px;
+            animation: cloudMoveReverse 25s linear infinite;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        @keyframes cloudMove {
+            from { transform: translateX(-100px); }
+            to { transform: translateX(calc(100vw + 100px)); }
+        }
+
+        @keyframes cloudMoveReverse {
+            from { transform: translateX(100px); }
+            to { transform: translateX(calc(-100vw - 100px)); }
+        }
+
+        .reader-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 4px solid var(--mario-red);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            width: 100%;
+            max-width: 900px;
+            min-height: 700px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .reader-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--mario-red) 0%, var(--mario-yellow) 25%, var(--mario-green) 50%, var(--mario-blue) 75%, var(--mario-red) 100%);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--mario-red) 0%, #ff4d6d 100%);
+            padding: 30px 40px;
+            text-align: center;
+            border-bottom: 4px solid var(--mario-yellow);
+            position: relative;
+            color: white;
+        }
+
+        .header::before {
+            content: '🍄';
+            position: absolute;
+            top: 15px;
+            left: 30px;
+            font-size: 28px;
+            animation: bounce 2s infinite;
+        }
+
+        .header::after {
+            content: '⭐';
+            position: absolute;
+            top: 15px;
+            right: 30px;
+            font-size: 28px;
+            animation: bounce 2s infinite 0.5s;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .header h1 {
+            font-family: var(--font-mario);
+            font-size: 32px;
+            font-weight: 400;
+            color: white;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            text-shadow: 3px 3px 0px var(--mario-blue), -1px -1px 0px var(--mario-yellow);
+        }
+
+        .header .subtitle {
+            font-size: 14px;
+            color: var(--mario-yellow);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.3);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: linear-gradient(135deg, var(--mario-blue) 0%, #4169e1 100%);
+            border-bottom: 2px solid var(--mario-yellow);
+            color: white;
+        }
+
+        .chapter-nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            background: var(--mario-yellow);
+            border: 3px solid var(--mario-red);
+            color: var(--mario-red);
+            padding: 12px 24px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border-radius: 25px;
+            position: relative;
+            font-family: var(--font-mario);
+            transform: translateY(0);
+        }
+
+        .nav-btn:hover {
+            background: var(--mario-red);
+            color: var(--mario-yellow);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(228, 0, 43, 0.4);
+        }
+
+        .nav-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .chapter-info {
+            font-size: 14px;
+            color: var(--mario-yellow);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: var(--font-mario);
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.3);
+        }
+
+        .settings {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .font-size-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .font-btn {
+            background: var(--mario-green);
+            border: 3px solid white;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-family: var(--font-mario);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .font-btn:hover {
+            background: white;
+            color: var(--mario-green);
+            transform: scale(1.15);
+            box-shadow: 0 4px 15px rgba(0, 170, 0, 0.4);
+        }
+
+        .content {
+            flex: 1;
+            padding: 50px;
+            overflow-y: auto;
+            line-height: 1.8;
+            font-size: 17px;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+            font-weight: 400;
+        }
+
+        .content h2 {
+            font-family: var(--font-mario);
+            font-size: 28px;
+            color: var(--mario-red);
+            margin-bottom: 30px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 3px solid var(--mario-yellow);
+            padding-bottom: 15px;
+            text-shadow: 2px 2px 0px var(--mario-blue);
+            position: relative;
+        }
+
+        .content h2::after {
+            content: '🪙';
+            position: absolute;
+            right: 0;
+            top: 0;
+            font-size: 24px;
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        .content p {
+            margin-bottom: 25px;
+            text-align: justify;
+            text-indent: 2em;
+        }
+
+        .content p:first-of-type {
+            font-style: italic;
+            font-weight: 500;
+            color: var(--mario-blue);
+            background: linear-gradient(135deg, rgba(92, 148, 252, 0.1) 0%, rgba(255, 204, 0, 0.1) 100%);
+            padding: 15px;
+            border-left: 4px solid var(--mario-blue);
+            border-radius: 0 10px 10px 0;
+            text-indent: 0;
+        }
+
+        .content em {
+            color: var(--mario-red);
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--cloud-white);
+            margin: 0 40px;
+            position: relative;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--mario-red), var(--mario-yellow), var(--mario-green), var(--mario-blue));
+            width: 25%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 15px rgba(228, 0, 43, 0.5);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '🏃‍♂️';
+            position: absolute;
+            right: -15px;
+            top: -15px;
+            font-size: 20px;
+            animation: run 0.5s infinite alternate;
+        }
+
+        @keyframes run {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-3px); }
+        }
+
+        .footer {
+            padding: 20px 40px;
+            background: linear-gradient(135deg, var(--mario-green) 0%, #00cc00 100%);
+            text-align: center;
+            color: white;
+            font-size: 12px;
+            border-top: 4px solid var(--mario-yellow);
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-family: var(--font-mario);
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.3);
+        }
+
+        /* Scrollbar styling */
+        .content::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .content::-webkit-scrollbar-track {
+            background: var(--background-blue);
+            border-radius: 6px;
+        }
+
+        .content::-webkit-scrollbar-thumb {
+            background: var(--mario-red);
+            border-radius: 6px;
+            border: 2px solid var(--mario-yellow);
+        }
+
+        .content::-webkit-scrollbar-thumb:hover {
+            background: var(--mario-yellow);
+            border: 2px solid var(--mario-red);
+        }
+
+        @media (max-width: 768px) {
+            .reader-container {
+                margin: 10px;
+                max-width: 100%;
+                border-radius: 15px;
+            }
+            
+            .content {
+                padding: 30px;
+                font-size: 16px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 20px;
+                padding: 25px;
+            }
+            
+            .settings {
+                justify-content: center;
+            }
+            
+            .header {
+                padding: 25px 30px;
+            }
+        }
+
+        /* Animations pour l'atmosphère Mario */
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .header h1 {
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        /* Power-up effect */
+        .power-up {
+            animation: powerUp 0.5s ease-in-out;
+        }
+
+        @keyframes powerUp {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); filter: brightness(1.2); }
+            100% { transform: scale(1); }
+        }
+    </style>
+<script src="https://puc.poecdn.net/authenticated_preview_page/syncedState.bd4eeeb8e8e02052ee92.js"></script></head>
+<body>
+    <div class="reader-container">
+        <div class="header">
+            <h1>ARCHIVES DU ROYAUME CHAMPIGNON</h1>
+            <p class="subtitle">Chroniques Secrètes</p>
+        </div>
+        
+        <div class="controls">
+            <div class="chapter-nav">
+                <button class="nav-btn" id="prevChapter" onclick="previousChapter()" disabled="">◄ Précédent</button>
+                <button class="nav-btn" id="nextChapter" onclick="nextChapter()">Suivant ►</button>
+            </div>
+            
+            <div class="chapter-info">
+                <span id="chapterCounter">Monde 1 sur 4</span>
+            </div>
+            
+            <div class="settings">
+                <div class="font-size-control">
+                    <button class="font-btn" onclick="decreaseFontSize()">A</button>
+                    <button class="font-btn" onclick="increaseFontSize()">A</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <div class="content" id="content">
+            <h2>Monde 1 : L'Éveil du Héros</h2>
+            <p>Dans le paisible Royaume Champignon, où les Toads vivent en harmonie sous la protection de la Princesse Peach, un simple plombier brooklynais s'apprête à devenir une légende. Mario Mario, avec son frère Luigi, répare les canalisations de New York sans se douter que son destin va basculer dans un monde de magie et d'aventures.</p>
+            
+            <p>Tout commence par un mystérieux tuyau vert qui aspire les deux frères dans un univers parallèle. Mario atterrit dans les plaines verdoyantes du Royaume Champignon, où il découvre l'existence des <em>Super Champignons</em>, des <em>Fleurs de Feu</em> et d'autres power-ups qui transforment ses capacités. Sa mission devient claire quand un Toad terrorisé lui apprend la terrible nouvelle : Bowser, le Roi des Koopas, a enlevé la Princesse Peach !</p>
+            
+            <p>Armé de sa détermination et de ses nouveaux pouvoirs, Mario entreprend sa première quête héroïque. Il traverse les collines verdoyantes du Monde 1-1, apprenant à sauter sur les Goombas et à éviter les Koopa Troopas. Chaque château visité ne révèle qu'un Toad reconnaissant qui proclame : "Merci Mario ! Mais notre Princesse est dans un autre château !" La frustration grandit, mais Mario ne renonce jamais.</p>
+            
+            <p>Dans les souterrains et les passages secrets, Mario découvre les pièces d'or qui parsèment son chemin. Il comprend rapidement que ce monde fonctionne selon des règles précises : collecter 100 pièces lui offre une vie supplémentaire, les blocs marqués d'un "?" cachent des trésors, et les tuyaux verts peuvent le transporter vers des zones bonus secrètes. Son apprentissage de héros commence ici, dans ces premiers défis qui forgeront sa légende...</p>
+        </div>
+        
+        <div class="footer">
+            <p>Royaume Champignon • Power-Ups Garantis • Super Mario Bros</p>
+        </div>
+    </div>
+
+    <script>
+        let currentChapter = 1;
+        const totalChapters = 4;
+        let fontSize = 17;
+
+        const chapters = {
+            1: {
+                title: "Monde 1 : L'Éveil du Héros",
+                content: `<h2>Monde 1 : L'Éveil du Héros</h2>
+                <p>Dans le paisible Royaume Champignon, où les Toads vivent en harmonie sous la protection de la Princesse Peach, un simple plombier brooklynais s'apprête à devenir une légende. Mario Mario, avec son frère Luigi, répare les canalisations de New York sans se douter que son destin va basculer dans un monde de magie et d'aventures.</p>
+                
+                <p>Tout commence par un mystérieux tuyau vert qui aspire les deux frères dans un univers parallèle. Mario atterrit dans les plaines verdoyantes du Royaume Champignon, où il découvre l'existence des <em>Super Champignons</em>, des <em>Fleurs de Feu</em> et d'autres power-ups qui transforment ses capacités. Sa mission devient claire quand un Toad terrorisé lui apprend la terrible nouvelle : Bowser, le Roi des Koopas, a enlevé la Princesse Peach !</p>
+                
+                <p>Armé de sa détermination et de ses nouveaux pouvoirs, Mario entreprend sa première quête héroïque. Il traverse les collines verdoyantes du Monde 1-1, apprenant à sauter sur les Goombas et à éviter les Koopa Troopas. Chaque château visité ne révèle qu'un Toad reconnaissant qui proclame : "Merci Mario ! Mais notre Princesse est dans un autre château !" La frustration grandit, mais Mario ne renonce jamais.</p>
+                
+                <p>Dans les souterrains et les passages secrets, Mario découvre les pièces d'or qui parsèment son chemin. Il comprend rapidement que ce monde fonctionne selon des règles précises : collecter 100 pièces lui offre une vie supplémentaire, les blocs marqués d'un "?" cachent des trésors, et les tuyaux verts peuvent le transporter vers des zones bonus secrètes. Son apprentissage de héros commence ici, dans ces premiers défis qui forgeront sa légende...</p>`
+            },
+            2: {
+                title: "Monde 2 : Les Défis Souterrains",
+                content: `<h2>Monde 2 : Les Défis Souterrains</h2>
+                <p>Plus déterminé que jamais, Mario s'enfonce dans les mondes souterrains du Royaume Champignon. Les tunnels labyrinthiques regorgent de dangers : des Goombas plus agressifs, des Koopa Troopas aux carapaces rebondissantes, et ces terrifiants Piranha Plants qui surgissent des tuyaux verts. Mais Mario apprend vite, et chaque obstacle surmonté renforce sa confiance en ses nouvelles capacités extraordinaires.</p>
+                
+                <p>C'est dans ces profondeurs qu'il rencontre pour la première fois les frères Hammer Bros, ces Koopas armés de marteaux qui testent vraiment ses réflexes. Mario développe ses techniques de saut, découvrant qu'il peut briser les blocs de briques d'un simple coup de poing quand il est transformé par un Super Champignon. L'<em>Étoile Invincible</em> devient son power-up favori : cette puissance temporaire lui permet de traverser les ennemis en étant totalement invulnérable.</p>
+                
+                <p>Dans le château du Monde 2, Mario affronte sa première véritable épreuve contre un Faux Bowser. Il découvre avec stupéfaction que ce redoutable adversaire n'était qu'un Goomba déguisé ! Cette révélation lui enseigne que dans ce monde magique, les apparences peuvent être trompeuses. Bowser utilise la magie noire pour créer des illusions et égarer les héros en quête de justice.</p>
+                
+                <p>Mais Mario ne se décourage pas. Chaque château exploré lui apporte de nouvelles connaissances sur les tactiques de Bowser. Il cartographie mentalement le royaume, comprenant que chaque monde possède ses propres particularités et défis uniques. Les Toads sauvés lui prodiguent des conseils précieux : "Attention aux fosses de lave du prochain monde !" ou "Les plateformes mobiles demandent un timing parfait !" Mario se prépare pour les épreuves qui l'attendent...</p>`
+            },
+            3: {
+                title: "Monde 3 : L'Ascension Périlleuse",
+                content: `<h2>Monde 3 : L'Ascension Périlleuse</h2>
+                <p>Mario atteint maintenant les régions montagneuses du royaume, où les plateformes flottantes défient les lois de la gravité. C'est ici qu'il perfectionne son art du saut, naviguant avec une précision millimétrique entre les nuages et les précipices. Les Lakitus, ces Koopas volants sur leurs nuages, lancent des Spinies qui testent constamment sa vigilance et ses réflexes de plus en plus aiguisés.</p>
+                
+                <p>Dans ces hauteurs vertigineuses, Mario découvre les passages secrets les plus ingénieux : des zones de bonus cachées dans le ciel, accessibles uniquement aux plus habiles. Il maîtrise l'art de rebondir sur les ennemis multiples pour gagner des vies supplémentaires : 100 points, 200 points, 400 points... jusqu'à la précieuse récompense de 1UP ! Ces techniques acrobatiques font de lui un véritable virtuose du saut.</p>
+                
+                <p>Le château de ce monde révèle une nouvelle facette de la stratégie de Bowser : des pièges mécaniques complexes avec des haches à esquiver et des ponts qui s'effondrent. Mario comprend que son ennemi ne compte pas seulement sur la force brute, mais aussi sur l'ingénierie diabolique. Chaque victoire contre un Faux Bowser lui enseigne une nouvelle leçon sur les illusions et la persévérance.</p>
+                
+                <p>Alors qu'il progresse vers les derniers mondes, Mario sent grandir en lui une confiance inébranlable. Il n'est plus le plombier novice qui découvrait les champignons magiques. Il est devenu le <em>Super Mario</em>, champion des opprimés, terreur des Goombas, et espoir du Royaume Champignon. La princesse Peach l'attend quelque part, et rien ne l'arrêtera désormais dans sa quête héroïque pour la sauver des griffes de Bowser...</p>`
+            },
+            4: {
+                title: "Monde 4 : La Confrontation Finale",
+                content: `<h2>Monde 4 : La Confrontation Finale</h2>
+                <p>Mario atteint enfin le redoutable Château de Bowser, une forteresse de lave et de flammes qui défie tous les défis qu'il a relevés jusqu'à présent. Les couloirs regorgent de pièges mortels : des barres de feu rotatives, des plateformes qui s'effondrent au-dessus de fosses de lave bouillonnante, et des Hammer Bros postés stratégiquement pour bloquer sa progression. Mais Mario, fort de toute son expérience acquise, navigue avec une maîtrise parfaite.</p>
+                
+                <p>La confrontation finale arrive enfin ! Bowser, le véritable Roi des Koopas, l'attend dans sa salle du trône. Ce n'est plus une illusion, mais le redoutable reptile en personne, crachant des boules de feu et chargeant avec une puissance terrifiante. Mario utilise toutes ses techniques : il esquive les flammes, saute par-dessus son ennemi, et cherche le point faible. La solution vient de son expérience : il doit atteindre la hache qui contrôle le pont !</p>
+                
+                <p>Quand Bowser s'effondre finalement dans la lave en poussant un rugissement de défaite, Mario découvre enfin la véritable Princesse Peach dans sa prison dorée. "Merci Mario !" s'exclame-t-elle avec gratitude. "Vous êtes le héros du Royaume Champignon !" Cette victoire marque la fin de sa première grande aventure, mais Mario sait que ce n'est que le début de sa destinée héroïque.</p>
+                
+                <p>Alors que la paix revient dans le Royaume Champignon, Mario contemple tout le chemin parcouru. De simple plombier, il est devenu une légende. Les Toads le célèbrent comme leur sauveur, la Princesse Peach lui offre un château en récompense, et même Luigi le regarde avec une admiration nouvelle. Mais dans le lointain, Mario aperçoit d'autres mondes, d'autres aventures qui l'attendent. Car un vrai héros ne s'arrête jamais d'aider ceux qui en ont besoin...</p>
+                
+                <p><em>Fin du Monde 1-1... Mais l'aventure continue dans Super Mario Bros 2 !</em></p>`
+            }
+        };
+
+        function updateChapter() {
+            const content = document.getElementById('content');
+            const chapterCounter = document.getElementById('chapterCounter');
+            const prevBtn = document.getElementById('prevChapter');
+            const nextBtn = document.getElementById('nextChapter');
+            const progressFill = document.getElementById('progressFill');
+
+            content.innerHTML = chapters[currentChapter].content;
+            chapterCounter.textContent = `Monde ${currentChapter} sur ${totalChapters}`;
+            
+            prevBtn.disabled = currentChapter === 1;
+            nextBtn.disabled = currentChapter === totalChapters;
+            
+            const progress = (currentChapter / totalChapters) * 100;
+            progressFill.style.width = progress + '%';
+            
+            content.scrollTop = 0;
+            
+            // Power-up effect lors du changement de chapitre
+            content.classList.add('power-up');
+            setTimeout(() => content.classList.remove('power-up'), 500);
+        }
+
+        function nextChapter() {
+            if (currentChapter < totalChapters) {
+                currentChapter++;
+                updateChapter();
+                playSound('coin');
+            }
+        }
+
+        function previousChapter() {
+            if (currentChapter > 1) {
+                currentChapter--;
+                updateChapter();
+                playSound('coin');
+            }
+        }
+
+        function increaseFontSize() {
+            if (fontSize < 24) {
+                fontSize += 2;
+                document.getElementById('content').style.fontSize = fontSize + 'px';
+                playSound('powerup');
+            }
+        }
+
+        function decreaseFontSize() {
+            if (fontSize > 14) {
+                fontSize -= 2;
+                document.getElementById('content').style.fontSize = fontSize + 'px';
+                playSound('powerup');
+            }
+        }
+
+        // Fonction pour simuler les sons (visuel seulement)
+        function playSound(type) {
+            const button = event.target;
+            if (type === 'coin') {
+                button.style.transform = 'scale(1.2)';
+                setTimeout(() => button.style.transform = '', 200);
+            } else if (type === 'powerup') {
+                button.classList.add('power-up');
+                setTimeout(() => button.classList.remove('power-up'), 500);
+            }
+        }
+
+        // Initialisation
+        updateChapter();
+
+        // Easter egg: Code Konami pour mode spécial Mario
+        let konamiCode = [];
+        const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // ↑↑↓↓←→←→BA
+        
+        document.addEventListener('keydown', function(e) {
+            konamiCode.push(e.keyCode);
+            if (konamiCode.length > konamiSequence.length) {
+                konamiCode.shift();
+            }
+            
+            if (JSON.stringify(konamiCode) === JSON.stringify(konamiSequence)) {
+                // Mode invincibilité visuel - effet étoile
+                document.body.style.animation = 'rainbow 0.5s infinite';
+                document.body.style.filter = 'brightness(1.3) saturate(1.5)';
+                
+                // Ajouter des étoiles temporaires
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(() => {
+                        const star = document.createElement('div');
+                        star.innerHTML = '⭐';
+                        star.style.position = 'fixed';
+                        star.style.left = Math.random() * window.innerWidth + 'px';
+                        star.style.top = Math.random() * window.innerHeight + 'px';
+                        star.style.fontSize = '30px';
+                        star.style.pointerEvents = 'none';
+                        star.style.zIndex = '1000';
+                        star.style.animation = 'bounce 1s ease-out';
+                        document.body.appendChild(star);
+                        
+                        setTimeout(() => star.remove(), 1000);
+                    }, i * 100);
+                }
+                
+                setTimeout(() => {
+                    document.body.style.animation = '';
+                    document.body.style.filter = '';
+                }, 3000);
+            }
+        });
+
+        // Ajout de l'animation rainbow pour l'easter egg
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes rainbow {
+                0% { filter: hue-rotate(0deg) brightness(1.3) saturate(1.5); }
+                25% { filter: hue-rotate(90deg) brightness(1.3) saturate(1.5); }
+                50% { filter: hue-rotate(180deg) brightness(1.3) saturate(1.5); }
+                75% { filter: hue-rotate(270deg) brightness(1.3) saturate(1.5); }
+                100% { filter: hue-rotate(360deg) brightness(1.3) saturate(1.5); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+
+</body></html>
